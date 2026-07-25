@@ -19,7 +19,7 @@ public class Result<T> {
     public static <E> Result<E> success(){//不带数据返回成功响应
         return success(null);
     }
-    public static <E> Result<E> fail(String message){//返回失败响应
-        return new Result<>(500,null,message);
+    public static <E> Result<E> fail(int code,String message){//返回失败响应
+        return new Result<>(code,null,message);
     }
 }

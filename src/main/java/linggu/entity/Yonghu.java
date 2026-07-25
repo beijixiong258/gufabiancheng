@@ -17,5 +17,5 @@ public class Yonghu {
     private String dianhua;//手机号
     private String shenfenzheng;//大陆身份证
     private String youxiang;//邮箱
-    private Quanxian quanxian;
+    private Quanxian quanxian;//用户身份，0是普通用户，1是管理员
 }
