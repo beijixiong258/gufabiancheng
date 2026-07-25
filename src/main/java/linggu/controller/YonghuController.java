@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class YonghuController {
     private final YonghuService yonghuService;
     @PostMapping("/zhuce")
-    public Result zhuce(){//待完成
+    public Result zhuce(){//咕咕咕
         return Result.success();
     }
 }
