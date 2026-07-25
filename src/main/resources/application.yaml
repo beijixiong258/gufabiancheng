@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: jiluzhushou
+
+  config:
+    import: "optional:file:./.env[.properties]"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jiluzhushou?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: "030206"
+
+  ai:
+    openai:
+      api-key: ${MIMO_API_KEY}
+      base-url: https://api.xiaomimimo.com
+      chat:
+        completions-path: /v1/chat/completions
+        options:
+          model: mimo-v2.5
+          temperature: 0.2
+          max-completion-tokens: 3000
+      embedding:
+        enabled: false
+      image:
+        enabled: false
+      audio:
+        speech:
+          enabled: false
+        transcription:
+          enabled: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+server:
+  port: 8080

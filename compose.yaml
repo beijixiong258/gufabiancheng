@@ -1,0 +1,25 @@
+name: jiluzhushou_shujuku
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jiluzhushou_shujuku
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "030206"
+      MYSQL_DATABASE: "jiluzhushou"
+      TZ: "Asia/Shanghai"
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql-data:
