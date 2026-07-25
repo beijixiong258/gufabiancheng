@@ -1,4 +1,4 @@
-package linggu;
+package linggu.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
