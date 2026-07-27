@@ -3,16 +3,12 @@ package linggu.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import static linggu.common.Validation.*;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Accessors(chain = true)
 public class ZhuceDTO {
     @NotBlank(message = "请输入账号")
