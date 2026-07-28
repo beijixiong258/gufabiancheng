@@ -1,15 +1,13 @@
 package linggu.controller;
 
 import jakarta.validation.Valid;
+import linggu.common.CommonException;
 import linggu.common.Result;
-import linggu.dto.DengluDTO;
-import linggu.dto.ZhuceDTO;
+import linggu.dto.YonghuDengluDTO;
+import linggu.dto.YonghuZhuceDTO;
 import linggu.service.YonghuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/yonghu")
@@ -17,15 +15,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class YonghuController {
     private final YonghuService yonghuService;
     @PostMapping("/zhuce")
-    public Result<Void> zhuce(@Valid @RequestBody ZhuceDTO zhuceDTO){
-        if (!yonghuService.zhuce(zhuceDTO)){
-            return Result.fail(500,"内部错误，注册失败。");
+    public Result<Void> zhuce(@Valid @RequestBody YonghuZhuceDTO yonghuZhuceDTO){
+        if (!yonghuService.zhuce(yonghuZhuceDTO)){
+            throw new CommonException(500,"内部错误，注册失败。");
         }
         return Result.success();
     }
     @PostMapping("/denglu")
-    public Result<String> denglu(@Valid @RequestBody DengluDTO dengluDTO){
-        String token= yonghuService.denglu(dengluDTO);
+    public Result<String> denglu(@Valid @RequestBody YonghuDengluDTO yonghuDengluDTO){
+        String token= yonghuService.denglu(yonghuDengluDTO);
         return Result.success(token);
+    }
+    @PutMapping("/mima")
+    public Result<Void> xiugaiMima(@RequestAttribute("yonghuId") String yonghuId, @RequestParam String mima1, @RequestParam String mima2){
+        if (mima2.isBlank() || mima2.length()<6 ||mima2.length()>32){
+            throw new CommonException(400,"新密码非法。");
+        }
+        if (!yonghuService.xiugaiMima(yonghuId,mima1,mima2)){
+            throw new CommonException(500,"内部错误，密码修改失败。");
+        }
+        return Result.success();
     }
 }
