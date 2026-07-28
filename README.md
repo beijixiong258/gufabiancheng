@@ -26,4 +26,4 @@ docker compose down
 
 数据库数据保存在Docker卷中，执行 `down` 不会删除数据。
 
-详细设计见 [docs](./docs/2.开发总览.md)。
+详细设计见 [docs/1.开发总览.md](./docs/1.开发总览.md)。
