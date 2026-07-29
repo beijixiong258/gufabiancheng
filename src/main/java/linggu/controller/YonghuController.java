@@ -7,7 +7,13 @@ import linggu.dto.YonghuDengluDTO;
 import linggu.dto.YonghuZhuceDTO;
 import linggu.service.YonghuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/yonghu")
@@ -25,6 +31,11 @@ public class YonghuController {
     public Result<String> denglu(@Valid @RequestBody YonghuDengluDTO yonghuDengluDTO){
         String token= yonghuService.denglu(yonghuDengluDTO);
         return Result.success(token);
+    }
+    @PostMapping("/shuaxin")
+    public Result<String> shuaxin(@RequestAttribute("token") String token){
+        String newToken=yonghuService.shuaxin(token);
+        return Result.success(newToken);
     }
     @PutMapping("/mima")
     public Result<Void> xiugaiMima(@RequestAttribute("yonghuId") String yonghuId, @RequestParam String mima1, @RequestParam String mima2){

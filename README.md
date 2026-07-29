@@ -5,25 +5,25 @@
 ## 运行
 
 1. 启动 Docker Desktop。
-2. 在项目根目录启动MySQL：
+2. 在项目根目录启动MySQL和Redis：
 
 ```powershell
 docker compose up -d
 ```
 
 3. 使用 IntelliJ IDEA 打开项目，选择 JDK 17，等待Maven依赖加载完成。
-4. 确认 `application.yaml` 中的数据库和AI配置可用。
+4. 确认 `application.yaml` 中的MySQL、Redis和AI配置可用。
 5. 在IDEA中运行：
 
 
 应用地址：`http://localhost:8080`
 
-停止数据库：
+停止MySQL和Redis容器：
 
 ```powershell
 docker compose down
 ```
 
-数据库数据保存在Docker卷中，执行 `down` 不会删除数据。
+MySQL和Redis数据保存在Docker卷中，执行 `down` 不会删除数据。
 
 详细设计见 [docs/1.开发总览.md](./docs/1.开发总览.md)。

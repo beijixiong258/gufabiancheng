@@ -43,7 +43,6 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
                 .setQuanxian(Quanxian.USER);
         return (save(yonghu));
     }
-
     @Override
     public String denglu(YonghuDengluDTO yonghuDengluDTO) {
         String zhanghao= yonghuDengluDTO.getZhanghao();
@@ -57,6 +56,11 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
             throw new CommonException(400,"密码错误。");
         }
         return loginManager.create(yonghu.getId());
+    }
+
+    @Override
+    public String shuaxin(String token) {
+        return loginManager.refresh(token);
     }
 
     @Override

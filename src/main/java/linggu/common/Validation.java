@@ -1,8 +1,5 @@
 package linggu.common;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 public class Validation {
     private Validation(){
     }

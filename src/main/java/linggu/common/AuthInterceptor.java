@@ -25,7 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorization == null || (!authorization.regionMatches(true, 0, PREFIX, 0, PREFIX.length()))){
-            throw new CommonException(401, "Token无效。");
+            throw new CommonException(401, "Token非法。");
         }
         String token=authorization.substring(PREFIX.length()).trim();
         if (token.isBlank()){
@@ -43,7 +43,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("yonghuId",yonghuId);
         request.setAttribute("token",token);
         request.setAttribute("quanxian",yonghu.getQuanxian());
-
         String path=request.getRequestURI();
         String contextPath= request.getContextPath();
         if (StrUtil.isNotEmpty(contextPath) && path.startsWith(contextPath)){

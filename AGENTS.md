@@ -7,8 +7,8 @@
 ## 开发原则
 
 - 保持 Controller、Service、Mapper、Entity 的传统分层。
-- 第一版使用 MyBatis-Plus、MySQL、进程内Token和 Spring AI `ChatClient`。
-- 当前不使用 Spring Security、JWT、Redis、消息队列或微服务；Redis仍处于考虑阶段，未实际接入前不得写成现状。
+- 第一版使用 MyBatis-Plus、MySQL、Redis Token和 Spring AI `ChatClient`。
+- 当前使用Redis保存登录Token，不使用Spring Security、JWT、OAuth、消息队列或微服务。
 - 类名、方法名和变量名可使用英文或拼音，不强制统一风格；同一业务概念保持一致。
 - 先完成简单、可运行、可理解的实现，再考虑扩展。
 - 本项目不使用Git相关流程。
@@ -25,7 +25,7 @@
 - Windows + IntelliJ IDEA。
 - JDK 17。
 - Maven Wrapper。
-- Docker Compose运行MySQL。
+- Docker Compose运行MySQL和Redis。
 - 不混用WSL与Windows的Java、Maven和虚拟环境。
 
 ## 设计文档

@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import static linggu.common.Validation.*;
+import static linggu.common.Validation.DIANHUA;
+import static linggu.common.Validation.SHENFENZHENG;
+import static linggu.common.Validation.YOUXIANG;
 
 @Data
 @Accessors(chain = true)

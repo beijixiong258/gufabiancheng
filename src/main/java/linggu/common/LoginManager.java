@@ -1,33 +1,46 @@
 package linggu.common;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.time.Duration;
 @Component
-public class LoginManager {//这玩意本质就是本科时候教的threadlocal模块，但是AI让我这么写，不用threadlocal，先顺从了。
-    private final Map<String, String> map=new ConcurrentHashMap<>();
-    //创建令牌
+@RequiredArgsConstructor
+public class LoginManager {//用redis管理key
+    private static final String PREFIX="login:";
+    private static final Duration LOGIN_TIME=Duration.ofDays(4);
+    private static final Duration REFRESH_TIME=Duration.ofHours(5);
+    private final StringRedisTemplate stringRedisTemplate;
     public String create(String yonghuId){
         String token=Utils.generateId();
-        map.put(token,yonghuId);
+        stringRedisTemplate.opsForValue().set(PREFIX+token,yonghuId,LOGIN_TIME);
         return token;
     }
-    //通过令牌查找用户ID
     public String get(String token){
-        return map.get(token);
+        String key=(PREFIX+token);
+        return stringRedisTemplate.opsForValue().get(key);
     }
-    //移除令牌
     public void remove(String token){
-        map.remove(token);
+        String key=(PREFIX+token);
+        stringRedisTemplate.delete(key);
     }
-    //刷新令牌
     public String refresh(String token){
+        String key=PREFIX+token;
         String yonghuId=this.get(token);
         if (yonghuId==null){
-            throw new CommonException(401,"token无效。");
+            throw new CommonException(401,"Token无效。");
         }
-        remove(token);
-        return this.create(yonghuId);
+        Long second=stringRedisTemplate.getExpire(key);
+        if (second==null || second<=0){
+            throw new CommonException(401,"Token过期。");
+        }
+        if (second>REFRESH_TIME.toSeconds()){
+            return token;
+        }
+        else {
+            this.remove(token);
+            return this.create(yonghuId);
+        }
     }
 }
