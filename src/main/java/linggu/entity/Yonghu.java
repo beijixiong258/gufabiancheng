@@ -1,9 +1,9 @@
 package linggu.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import linggu.enums.Quanxian;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class Yonghu {
     private String id;//用户ID
     @TableField("zhanghao")
     private String zhanghao;//账号
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @TableField("mima")
     private String mima;//密码
     @TableField("dianhua")

@@ -1,5 +1,6 @@
 package linggu.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,6 +9,7 @@ import linggu.common.LoginManager;
 import linggu.common.Utils;
 import linggu.dto.YonghuDengluDTO;
 import linggu.dto.YonghuGengxinDTO;
+import linggu.dto.YonghuXinzengDTO;
 import linggu.dto.YonghuZhuceDTO;
 import linggu.entity.Yonghu;
 import linggu.enums.Quanxian;
@@ -64,6 +66,12 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
     }
 
     @Override
+    public boolean tuichu(String token) {
+        loginManager.remove(token);
+        return true;
+    }
+
+    @Override
     public YonghuChakanVO chakan(String yonghuId) {
         Yonghu yonghu=getById(yonghuId);
         if (yonghu==null){
@@ -110,28 +118,67 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
                 .set(Yonghu::getMima,Utils.mimaJiami(mima2));
         return (update(lambdaUpdateWrapper));
     }
+
     @Override
-    public boolean xinzeng(YonghuZhuceDTO yonghuZhuceDTO) {
-        return false;
+    @Transactional(rollbackFor = Exception.class)
+    public boolean xinzeng(YonghuXinzengDTO yonghuXinzengDTO) {
+        Yonghu yonghu= new Yonghu();
+        BeanUtil.copyProperties(yonghuXinzengDTO,yonghu,"mima");
+        String zhanghao=yonghu.getZhanghao();
+        LambdaQueryWrapper<Yonghu> lambdaQueryWrapper=new LambdaQueryWrapper<Yonghu>().eq(Yonghu::getZhanghao,zhanghao);
+        if (!list(lambdaQueryWrapper).isEmpty()){
+            throw new CommonException(400,"账号已存在。");
+        }
+        yonghu.setId(Utils.generateId()).setMima(Utils.mimaJiami(yonghuXinzengDTO.getMima()));
+        return (save(yonghu));
     }
+
 
     @Override
     public GuanliyuanChaxunVO chaxun(String yonghuId) {
-        return null;
+        Yonghu yonghu=getById(yonghuId);
+        if (yonghu==null){
+            throw new CommonException(404,"用户ID不存在。");
+        }
+        GuanliyuanChaxunVO vo=new GuanliyuanChaxunVO();
+        BeanUtil.copyProperties(yonghu,vo);
+        return vo;
     }
 
     @Override
     public List<GuanliyuanChaxunVO> huoquLiebiao() {
-        return null;
+        List<Yonghu> yonghuList=list();
+        return BeanUtil.copyToList(yonghuList, GuanliyuanChaxunVO.class);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean xiugai(Yonghu yonghu) {
-        return false;
+        if (getById(yonghu.getId())==null){
+            throw new CommonException(404,"用户不存在。");
+        }
+        String zhanghao=yonghu.getZhanghao();
+        LambdaQueryWrapper<Yonghu> lambdaQueryWrapper=new LambdaQueryWrapper<Yonghu>()
+                .eq(Yonghu::getZhanghao,zhanghao)
+                .ne(Yonghu::getId,yonghu.getId());
+        if (!list(lambdaQueryWrapper).isEmpty()){
+            throw new CommonException(400,"账号重复");
+        }
+        String mima = yonghu.getMima();
+        if (mima==null || mima.isBlank()) {
+            mima = "000000";
+        }
+        yonghu.setMima(Utils.mimaJiami(mima));
+        return (updateById(yonghu));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean shanchu(String yonghuId) {
-        return false;
+        //待完成删除用户创建的记录
+        if (getById(yonghuId)==null){
+            throw new CommonException(404,"删除失败，用户不存在。");
+        }
+        return (removeById(yonghuId));
     }
 }
