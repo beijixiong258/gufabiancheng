@@ -19,7 +19,7 @@ public interface YonghuService extends IService<Yonghu> {
     YonghuChakanVO chakan(String yonghuId);//查看个人主页，不返回身份证和密码
     boolean gengxin(String id,YonghuGengxinDTO yonghuGengxinDTO);//更新指定字段的个人信息
     boolean xiugaiMima(String id,String mima1,String mima2);//用户修改密码
-    boolean xinzeng(YonghuXinzengDTO yonghuXinzengDTO);//管理员新增用户
+    boolean tianjia(YonghuXinzengDTO yonghuXinzengDTO);//管理员新增用户
 
     GuanliyuanChaxunVO chaxun(String yonghuId);//查询单个用户，只用于管理员查人
     List<GuanliyuanChaxunVO> huoquLiebiao();//管理员获取用户列表

@@ -15,8 +15,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
-                        "/yonghu/zhuce",
-                        "/yonghu/denglu",
+                        "/yonghu/register",
+                        "/yonghu/login",
                         "/error"
                 );
     }

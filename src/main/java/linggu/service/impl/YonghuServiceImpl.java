@@ -121,7 +121,7 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean xinzeng(YonghuXinzengDTO yonghuXinzengDTO) {
+    public boolean tianjia(YonghuXinzengDTO yonghuXinzengDTO) {
         Yonghu yonghu= new Yonghu();
         BeanUtil.copyProperties(yonghuXinzengDTO,yonghu,"mima");
         String zhanghao=yonghu.getZhanghao();
@@ -166,7 +166,7 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
         }
         String mima = yonghu.getMima();
         if (mima==null || mima.isBlank()) {
-            mima = "000000";
+            mima="000000";
         }
         yonghu.setMima(Utils.mimaJiami(mima));
         return (updateById(yonghu));
@@ -175,7 +175,6 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean shanchu(String yonghuId) {
-        //待完成删除用户创建的记录
         if (getById(yonghuId)==null){
             throw new CommonException(404,"删除失败，用户不存在。");
         }
