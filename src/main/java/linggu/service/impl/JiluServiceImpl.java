@@ -1,16 +1,21 @@
 package linggu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import linggu.common.CommonException;
 import linggu.common.Utils;
 import linggu.dto.JiluXinjianDTO;
+import linggu.dto.JiluXiugaiDTO;
 import linggu.entity.Jilu;
 import linggu.enums.Zhuangtai;
 import linggu.mapper.JiluMapper;
 import linggu.service.JiluService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,22 +37,59 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
     }
 
     @Override
-    public boolean xiugai(Jilu jilu) {
-        return false;
+    public boolean xiugai(String yonghuId,String jiluId,JiluXiugaiDTO jiluXiugaiDTO) {
+        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+        );
+        if (jilu==null){
+            throw new CommonException(404,"记录不存在。");
+        }
+        BeanUtil.copyProperties(jiluXiugaiDTO,jilu);
+        jilu.setZhuangtai(Zhuangtai.DRAFT);
+        return updateById(jilu);
     }
 
     @Override
-    public Jilu chakan(String jiluId) {
-        return null;
+    public Jilu chakan(String yonghuId,String jiluId) {
+        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+        );
+        if (jilu==null){
+            throw new CommonException(404,"记录不存在。");
+        }
+        return jilu;
     }
 
     @Override
-    public boolean shanchu(String jiluId) {
-        return false;
+    public boolean shanchu(String yonghuId,String jiluId) {
+        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+        );
+        if (jilu==null){
+            throw new CommonException(404,"记录不存在。");
+        }
+        return removeById(jilu);
     }
 
     @Override
-    public boolean piliangShanchu(List<String> jiluIdList) {
-        return false;
+    @Transactional(rollbackFor = Exception.class)
+    public boolean piliangShanchu(String yonghuid,List<String> jiluIdList) {
+        if (ObjectUtil.isEmpty(jiluIdList)){
+            throw new CommonException(400,"ID列表为空。");
+        }
+        if (jiluIdList.stream().anyMatch(id -> StrUtil.isBlank(id))) {
+            throw new CommonException(400, "存在为空的ID。");
+        }
+        List<String> list=jiluIdList.stream().distinct().toList();
+        LambdaQueryWrapper<Jilu> lambdaQueryWrapper=new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getYonghuId,yonghuid)
+                .in(Jilu::getId,list);
+        if (count(lambdaQueryWrapper)!=list.size()){
+            throw new CommonException(404,"部分记录不存在。");
+        }
+        return remove(lambdaQueryWrapper);
     }
 }
