@@ -6,6 +6,7 @@ import linggu.dto.JiluXinjianDTO;
 import linggu.dto.JiluXiugaiDTO;
 import linggu.entity.Jilu;
 import linggu.service.JiluService;
+import linggu.vo.JiluLiebiaoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +29,21 @@ public class JiluController {
         }
         return Result.success();
     }
+    @PutMapping("/wancheng")
+    public Result<Void> wanchengJilu(@RequestAttribute String yonghuId, @RequestParam String id) {
+        boolean success = jiluService.wancheng(yonghuId, id);
+        if (!success) {
+            return Result.fail(500, "内部错误，状态修改失败。");
+        }
+        return Result.success();
+    }
     @GetMapping("/chakan")
     public Result<Jilu> chakanJilu(@RequestAttribute String yonghuId,@RequestParam String id){
         return Result.success(jiluService.chakan(yonghuId, id));
+    }
+    @GetMapping("/chakanliebiao")
+    public Result<List<JiluLiebiaoVO>> chakanLiebiao(@RequestAttribute String yonghuId){
+        return Result.success(jiluService.chakanLiebiao(yonghuId));
     }
     @DeleteMapping("/shanchu")
     public Result<Void> shanchuJilu(@RequestAttribute String yonghuId,@RequestParam String id){

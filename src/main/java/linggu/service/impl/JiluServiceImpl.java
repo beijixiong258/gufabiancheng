@@ -13,6 +13,7 @@ import linggu.entity.Jilu;
 import linggu.enums.Zhuangtai;
 import linggu.mapper.JiluMapper;
 import linggu.service.JiluService;
+import linggu.vo.JiluLiebiaoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,23 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
     }
 
     @Override
-    public boolean xiugai(String yonghuId,String jiluId,JiluXiugaiDTO jiluXiugaiDTO) {
+    public boolean wancheng(String yonghuId, String jiluId) {
+        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+        );
+        if (jilu==null){
+            throw new CommonException(404,"记录不存在。");
+        }
+        if (StrUtil.isBlank(jilu.getZhengwen())){
+            throw new CommonException(400, "正文为空，操作非法。");
+        }
+        jilu.setZhuangtai(Zhuangtai.FINISH);
+        return updateById(jilu);
+    }
+
+    @Override
+    public boolean xiugai(String yonghuId, String jiluId, JiluXiugaiDTO jiluXiugaiDTO) {
         Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
                 .eq(Jilu::getId,jiluId)
                 .eq(Jilu::getYonghuId,yonghuId)
@@ -60,6 +77,15 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
             throw new CommonException(404,"记录不存在。");
         }
         return jilu;
+    }
+
+    @Override
+    public List<JiluLiebiaoVO> chakanLiebiao(String yonghuId) {
+        List<Jilu> list=list(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getYonghuId,yonghuId)
+                .orderByDesc(Jilu::getXiugaiShijian)
+        );
+        return BeanUtil.copyToList(list, JiluLiebiaoVO.class);
     }
 
     @Override
