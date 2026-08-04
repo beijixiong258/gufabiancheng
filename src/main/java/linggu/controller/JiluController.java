@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/jilu")
 @RequiredArgsConstructor
+@RequestMapping("/jilu")
 public class JiluController {
     private final JiluService jiluService;
     @PostMapping("/xinjian")

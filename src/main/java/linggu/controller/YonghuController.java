@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/yonghu")
 @RequiredArgsConstructor
+@RequestMapping("/yonghu")
 public class YonghuController {
     private final YonghuService yonghuService;
     @PostMapping("/register")

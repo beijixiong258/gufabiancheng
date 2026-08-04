@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class GuanliyuanController {
     private final YonghuService yonghuService;
     @PostMapping("/add")

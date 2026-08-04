@@ -3,5 +3,9 @@ package linggu.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import linggu.entity.Huihua;
 
+import java.util.List;
+
 public interface HuihuaService extends IService<Huihua> {
+    String xinjian(String yonghuId,String jiluId);
+    List<Huihua> chakanLiebiao(String yonghuId,String jiluId);
 }
