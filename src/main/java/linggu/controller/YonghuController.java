@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import linggu.common.CommonException;
 import linggu.common.Result;
 import linggu.dto.YonghuDengluDTO;
-import linggu.dto.YonghuGengxinDTO;
+import linggu.dto.YonghuXiugaiDTO;
 import linggu.dto.YonghuZhuceDTO;
 import linggu.service.YonghuService;
 import linggu.vo.YonghuChakanVO;
@@ -60,12 +60,12 @@ public class YonghuController {
         return Result.success();
     }
     @PutMapping("/update")
-    public Result<Void> gengxin(@RequestAttribute String yonghuId,@Valid @RequestBody YonghuGengxinDTO yonghuGengxinDTO){
-        if(yonghuService.gengxin(yonghuId,yonghuGengxinDTO)){
+    public Result<Void> xiugai(@RequestAttribute String yonghuId,@Valid @RequestBody YonghuXiugaiDTO yonghuXiugaiDTO){
+        if(yonghuService.xiugai(yonghuId,yonghuXiugaiDTO)){
             return Result.success();
         }
         else {
-            return Result.fail(500,"内部错误，信息更新失败。");
+            return Result.fail(500,"内部错误，信息修改失败。");
         }
     }
 }

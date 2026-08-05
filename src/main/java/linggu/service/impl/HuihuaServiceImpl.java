@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import linggu.common.CommonException;
 import linggu.common.Utils;
 import linggu.entity.Huihua;
+import linggu.entity.Jilu;
 import linggu.mapper.HuihuaMapper;
 import linggu.service.HuihuaService;
 import linggu.service.JiluService;
@@ -23,9 +24,25 @@ public class HuihuaServiceImpl extends ServiceImpl<HuihuaMapper, Huihua> impleme
         String huihuaId=Utils.generateId();
         Huihua huihua=new Huihua(huihuaId,jiluId);
         if (!save(huihua)){
-            throw new CommonException(500,"内部错误，会话创建失败。");
+            throw new CommonException(500,"内部错误，新建失败。");
         }
         return huihuaId;
+    }
+
+    @Override
+    public Huihua chakan(String yonghuId, String huihuaId) {
+        Huihua huihua=getById(huihuaId);
+        if (huihua==null){
+            throw new CommonException(404,"会话不存在。");
+        }
+        Jilu jilu=jiluService.getOne(new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getYonghuId,yonghuId)
+                .eq(Jilu::getId,huihua.getJiluId())
+        );
+        if (jilu==null){
+            throw new CommonException(404,"会话不存在");
+        }
+        return huihua;
     }
 
     @Override

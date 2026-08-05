@@ -2,10 +2,10 @@ package linggu.controller;
 
 import jakarta.validation.Valid;
 import linggu.common.Result;
-import linggu.dto.YonghuXinzengDTO;
+import linggu.dto.YonghuXinjianDTO;
 import linggu.entity.Yonghu;
 import linggu.service.YonghuService;
-import linggu.vo.GuanliyuanChaxunVO;
+import linggu.vo.GuanliyuanChakanVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,21 +24,21 @@ import java.util.List;
 public class GuanliyuanController {
     private final YonghuService yonghuService;
     @PostMapping("/add")
-    public Result<Void> tianjiaYonghu(@Valid @RequestBody YonghuXinzengDTO yonghuXinzengDTO){
-        if (yonghuService.tianjia(yonghuXinzengDTO)){
+    public Result<Void> xinjianYonghu(@Valid @RequestBody YonghuXinjianDTO yonghuXinjianDTO){
+        if (yonghuService.xinjian(yonghuXinjianDTO)){
             return Result.success();
         }
         else {
-            return Result.fail(500,"内部错误，用户创建失败");
+            return Result.fail(500,"内部错误，用户新建失败");
         }
     }
     @GetMapping("/get")
-    public Result<GuanliyuanChaxunVO> chaxunYonghu(@RequestParam String yonghuId){
-        return Result.success(yonghuService.chaxun(yonghuId));
+    public Result<GuanliyuanChakanVO> chakanYonghu(@RequestParam String yonghuId){
+        return Result.success(yonghuService.chakanYonghu(yonghuId));
     }
     @GetMapping("/getlist")
-    public Result<List<GuanliyuanChaxunVO>> yonghuLiebiao(){
-        return Result.success(yonghuService.huoquLiebiao());
+    public Result<List<GuanliyuanChakanVO>> chakanYonghuLiebiao(){
+        return Result.success(yonghuService.chakanLiebiao());
     }
     @PutMapping("/modify")
     public Result<Void> xiugaiYonghu(@RequestBody Yonghu yonghu){
@@ -48,8 +48,8 @@ public class GuanliyuanController {
         return Result.success();
     }
     @DeleteMapping("/delete")
-    public Result<Void> shanchuYonghu(@RequestParam("id") String id){
-        if (!yonghuService.shanchu(id)){
+    public Result<Void> shanchuYonghu(@RequestParam("id") String yonghuId){
+        if (!yonghuService.shanchu(yonghuId)){
             return Result.fail(500,"内部错误，用户删除失败。");
         }
         return Result.success();

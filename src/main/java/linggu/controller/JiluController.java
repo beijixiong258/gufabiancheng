@@ -22,33 +22,33 @@ public class JiluController {
         return Result.success(jiluService.xinjian(yonghuId,jiluXinjianDTO));
     }
     @PutMapping("/xiugai")
-    public Result<Void> xiugaiJilu(@RequestAttribute String yonghuId,@RequestParam String id, @Valid @RequestBody JiluXiugaiDTO jiluXiugaiDTO){
-        boolean success=jiluService.xiugai(yonghuId,id,jiluXiugaiDTO);
+    public Result<Void> xiugaiJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId, @Valid @RequestBody JiluXiugaiDTO jiluXiugaiDTO){
+        boolean success=jiluService.xiugai(yonghuId,jiluId,jiluXiugaiDTO);
         if (!success){
             return Result.fail(500,"内部错误，记录修改失败。");
         }
         return Result.success();
     }
     @PutMapping("/wancheng")
-    public Result<Void> wanchengJilu(@RequestAttribute String yonghuId, @RequestParam String id) {
-        boolean success = jiluService.wancheng(yonghuId, id);
+    public Result<Void> wanchengJilu(@RequestAttribute String yonghuId, @RequestParam("id") String jiluId) {
+        boolean success = jiluService.wancheng(yonghuId, jiluId);
         if (!success) {
             return Result.fail(500, "内部错误，状态修改失败。");
         }
         return Result.success();
     }
     @GetMapping("/chakan")
-    public Result<Jilu> chakanJilu(@RequestAttribute String yonghuId,@RequestParam String id){
-        return Result.success(jiluService.chakan(yonghuId, id));
+    public Result<Jilu> chakanJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId){
+        return Result.success(jiluService.chakan(yonghuId, jiluId));
     }
     @GetMapping("/chakanliebiao")
     public Result<List<JiluLiebiaoVO>> chakanLiebiao(@RequestAttribute String yonghuId){
         return Result.success(jiluService.chakanLiebiao(yonghuId));
     }
     @DeleteMapping("/shanchu")
-    public Result<Void> shanchuJilu(@RequestAttribute String yonghuId,@RequestParam String id){
-        boolean sucess= jiluService.shanchu(yonghuId, id);
-        if (!sucess){
+    public Result<Void> shanchuJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId){
+        boolean success= jiluService.shanchu(yonghuId, jiluId);
+        if (!success){
             return Result.fail(500,"内部错误，记录删除失败");
         }
         return Result.success();

@@ -17,6 +17,10 @@ public class HuihuaController {
     public Result<String> xinjianHuihua(@RequestAttribute String yonghuId,@RequestParam String jiluId){
         return Result.success(huihuaService.xinjian(yonghuId,jiluId));
     }
+    @GetMapping("/chakan")
+    public Result<Huihua> chakanHuihua(@RequestAttribute String yonghuId,@RequestParam String huihuaId){
+        return Result.success(huihuaService.chakan(yonghuId, huihuaId));
+    }
     @GetMapping("/liebiao")
     public Result<List<Huihua>> chakanHuihuaLiebiao(@RequestAttribute String yonghuId,@RequestParam String jiluId){
         return Result.success(huihuaService.chakanLiebiao(yonghuId, jiluId));

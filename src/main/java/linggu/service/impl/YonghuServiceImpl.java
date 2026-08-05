@@ -8,14 +8,14 @@ import linggu.common.CommonException;
 import linggu.common.LoginManager;
 import linggu.common.Utils;
 import linggu.dto.YonghuDengluDTO;
-import linggu.dto.YonghuGengxinDTO;
-import linggu.dto.YonghuXinzengDTO;
+import linggu.dto.YonghuXiugaiDTO;
+import linggu.dto.YonghuXinjianDTO;
 import linggu.dto.YonghuZhuceDTO;
 import linggu.entity.Yonghu;
 import linggu.enums.Quanxian;
 import linggu.mapper.YonghuMapper;
 import linggu.service.YonghuService;
-import linggu.vo.GuanliyuanChaxunVO;
+import linggu.vo.GuanliyuanChakanVO;
 import linggu.vo.YonghuChakanVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -86,69 +86,69 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean gengxin(String id, YonghuGengxinDTO yonghuGengxinDTO) {
-        Yonghu yonghu=getById(id);
+    public boolean xiugai(String yonghuId, YonghuXiugaiDTO yonghuXiugaiDTO) {
+        Yonghu yonghu=getById(yonghuId);
         if (yonghu==null){
-            throw new CommonException(404,"更新失败，未找到指定用户。");
+            throw new CommonException(404,"修改失败，未找到指定用户。");
         }
         LambdaQueryWrapper<Yonghu> lambdaQueryWrapper=new LambdaQueryWrapper<Yonghu>()
-                .eq(Yonghu::getZhanghao,yonghuGengxinDTO.getZhanghao())
-                .ne(Yonghu::getId,id);
+                .eq(Yonghu::getZhanghao,yonghuXiugaiDTO.getZhanghao())
+                .ne(Yonghu::getId,yonghuId);
         if (!list(lambdaQueryWrapper).isEmpty()){
             throw new CommonException(400,"账号重复");
         }
-        yonghu.setZhanghao(yonghuGengxinDTO.getZhanghao())
-                .setDianhua(yonghuGengxinDTO.getDianhua())
-                .setYouxiang(yonghuGengxinDTO.getYouxiang());
+        yonghu.setZhanghao(yonghuXiugaiDTO.getZhanghao())
+                .setDianhua(yonghuXiugaiDTO.getDianhua())
+                .setYouxiang(yonghuXiugaiDTO.getYouxiang());
         return (updateById(yonghu));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean xiugaiMima(String id, String mima1,String mima2) {
-        Yonghu yonghu=getById(id);
+    public boolean xiugaiMima(String yonghuId, String mima1,String mima2) {
+        Yonghu yonghu=getById(yonghuId);
         if (yonghu==null){
-            throw new CommonException(404,"更新失败，未找到指定用户。");
+            throw new CommonException(404,"修改失败，未找到指定用户。");
         }
         if (!Utils.jiamiJiancha(mima1,yonghu.getMima())){
             throw new CommonException(400,"原密码输入错误。");
         }
         LambdaUpdateWrapper<Yonghu> lambdaUpdateWrapper=new LambdaUpdateWrapper<Yonghu>()
-                .eq(Yonghu::getId,id)
+                .eq(Yonghu::getId,yonghuId)
                 .set(Yonghu::getMima,Utils.mimaJiami(mima2));
         return (update(lambdaUpdateWrapper));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean tianjia(YonghuXinzengDTO yonghuXinzengDTO) {
+    public boolean xinjian(YonghuXinjianDTO yonghuXinjianDTO) {
         Yonghu yonghu= new Yonghu();
-        BeanUtil.copyProperties(yonghuXinzengDTO,yonghu,"mima");
+        BeanUtil.copyProperties(yonghuXinjianDTO,yonghu,"mima");
         String zhanghao=yonghu.getZhanghao();
         LambdaQueryWrapper<Yonghu> lambdaQueryWrapper=new LambdaQueryWrapper<Yonghu>().eq(Yonghu::getZhanghao,zhanghao);
         if (!list(lambdaQueryWrapper).isEmpty()){
             throw new CommonException(400,"账号已存在。");
         }
-        yonghu.setId(Utils.generateId()).setMima(Utils.mimaJiami(yonghuXinzengDTO.getMima()));
+        yonghu.setId(Utils.generateId()).setMima(Utils.mimaJiami(yonghuXinjianDTO.getMima()));
         return (save(yonghu));
     }
 
 
     @Override
-    public GuanliyuanChaxunVO chaxun(String yonghuId) {
+    public GuanliyuanChakanVO chakanYonghu(String yonghuId) {
         Yonghu yonghu=getById(yonghuId);
         if (yonghu==null){
             throw new CommonException(404,"用户ID不存在。");
         }
-        GuanliyuanChaxunVO vo=new GuanliyuanChaxunVO();
+        GuanliyuanChakanVO vo=new GuanliyuanChakanVO();
         BeanUtil.copyProperties(yonghu,vo);
         return vo;
     }
 
     @Override
-    public List<GuanliyuanChaxunVO> huoquLiebiao() {
+    public List<GuanliyuanChakanVO> chakanLiebiao() {
         List<Yonghu> yonghuList=list();
-        return BeanUtil.copyToList(yonghuList, GuanliyuanChaxunVO.class);
+        return BeanUtil.copyToList(yonghuList, GuanliyuanChakanVO.class);
     }
 
     @Override
