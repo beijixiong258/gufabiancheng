@@ -1,6 +1,7 @@
 package linggu.common;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -45,6 +46,11 @@ public class GlobalExceptionHandler {
             message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         }
         return Result.fail(400, message);
+    }
+    //处理请求体JSON格式错误和枚举值非法异常
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Result<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return Result.fail(400, "请求体格式错误。");
     }
     //处理其它异常
     @ExceptionHandler(Exception.class)

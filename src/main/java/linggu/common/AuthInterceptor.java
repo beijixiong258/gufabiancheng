@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.HandlerMapping;
 
 @Component
 @RequiredArgsConstructor
@@ -43,10 +44,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("yonghuId",yonghuId);
         request.setAttribute("token",token);
         request.setAttribute("quanxian",yonghu.getQuanxian());
-        String path=request.getRequestURI();
-        String contextPath= request.getContextPath();
-        if (StrUtil.isNotEmpty(contextPath) && path.startsWith(contextPath)){
-            path=path.substring(contextPath.length());
+        Object pathAttribute=request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String path;
+        if (pathAttribute==null){
+            path="";
+        }
+        else {
+            path=pathAttribute.toString();
         }
         boolean isAdmin=path.equals("/admin") || path.startsWith("/admin/");
         if (isAdmin && yonghu.getQuanxian()!= Quanxian.ADMIN){

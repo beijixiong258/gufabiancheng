@@ -2,6 +2,7 @@ package linggu.controller;
 
 import linggu.common.Result;
 import linggu.entity.Huihua;
+import linggu.service.AIChatService;
 import linggu.service.HuihuaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

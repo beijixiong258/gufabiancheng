@@ -1,6 +1,7 @@
 package linggu.entity;
 
 import cn.hutool.core.date.DateTime;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -31,8 +32,8 @@ public class Jilu {
     private Zhuangtai zhuangtai;//记录状态，0为未完成，1为完成
     @TableField("yonghu_id")
     private String yonghuId;//所属用户的用户ID
-    @TableField("chuangjian_shijian")
+    @TableField(value = "chuangjian_shijian", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private DateTime chuangjianShijian;//创建时间
-    @TableField("xiugai_shijian")
+    @TableField(value = "xiugai_shijian", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     private DateTime xiugaiShijian;//修改时间
 }
