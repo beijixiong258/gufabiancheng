@@ -1,0 +1,92 @@
+CREATE TABLE IF NOT EXISTS yonghu
+(
+    id            VARCHAR(64)  NOT NULL COMMENT '用户ID',
+    zhanghao      VARCHAR(32)  NOT NULL COMMENT '登录账号',
+    mima          VARCHAR(255) NOT NULL COMMENT '密码哈希',
+    dianhua       VARCHAR(32)  NULL COMMENT '手机号',
+    shenfenzheng  VARCHAR(32)  NULL COMMENT '大陆身份证号',
+    youxiang      VARCHAR(255) NULL COMMENT '邮箱',
+    quanxian      TINYINT      NOT NULL DEFAULT 0 COMMENT '权限：0普通用户，1管理员',
+
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_yonghu_zhanghao (zhanghao),
+    CONSTRAINT ck_yonghu_quanxian
+        CHECK (quanxian IN (0, 1))
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci
+    COMMENT = '用户表';
+
+CREATE TABLE IF NOT EXISTS jilu
+(
+    id                  VARCHAR(64)  NOT NULL COMMENT '记录ID',
+    timu                VARCHAR(255) NOT NULL COMMENT '题目',
+    ticai               TINYINT      NOT NULL DEFAULT 0 COMMENT '题材：0其他，1日记，2文学，3学术，4会议',
+    biaoqian            VARCHAR(100) NULL COMMENT '用于分组的标签，可以为空',
+    zhengwen            LONGTEXT     NULL COMMENT '当前正文，可以为空',
+    zhuangtai           TINYINT      NOT NULL DEFAULT 0 COMMENT '状态：0草稿，1完成',
+    yonghu_id           VARCHAR(64)  NOT NULL COMMENT '所属用户ID',
+    chuangjian_shijian  DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
+    xiugai_shijian      DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+        ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '修改时间',
+
+    PRIMARY KEY (id),
+    KEY idx_jilu_yonghu_zhuangtai (yonghu_id, zhuangtai, xiugai_shijian),
+    KEY idx_jilu_yonghu_ticai (yonghu_id, ticai),
+    KEY idx_jilu_yonghu_biaoqian (yonghu_id, biaoqian),
+    CONSTRAINT fk_jilu_yonghu
+        FOREIGN KEY (yonghu_id) REFERENCES yonghu (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT ck_jilu_ticai
+        CHECK (ticai IN (0, 1, 2, 3, 4)),
+    CONSTRAINT ck_jilu_zhuangtai
+        CHECK (zhuangtai IN (0, 1))
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci
+    COMMENT = '记录表';
+
+CREATE TABLE IF NOT EXISTS huihua
+(
+    id       VARCHAR(64) NOT NULL COMMENT '会话ID',
+    jilu_id  VARCHAR(64) NOT NULL COMMENT '所属记录ID',
+
+    PRIMARY KEY (id),
+    KEY idx_huihua_jilu_id (jilu_id),
+    CONSTRAINT fk_huihua_jilu
+        FOREIGN KEY (jilu_id) REFERENCES jilu (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci
+    COMMENT = '会话表';
+
+CREATE TABLE IF NOT EXISTS xiaoxi
+(
+    id                 VARCHAR(64) NOT NULL COMMENT '消息ID',
+    huihua_id          VARCHAR(64) NOT NULL COMMENT '所属会话ID',
+    neirong            LONGTEXT    NOT NULL COMMENT '消息内容',
+    laiyuan            TINYINT     NOT NULL COMMENT '来源：0 AI，1用户',
+    xuhao              INT         NOT NULL COMMENT '消息在会话中的序号',
+    chansheng_shijian  DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '消息产生时间',
+
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_xiaoxi_huihua_xuhao (huihua_id, xuhao),
+    CONSTRAINT fk_xiaoxi_huihua
+        FOREIGN KEY (huihua_id) REFERENCES huihua (id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT ck_xiaoxi_laiyuan
+        CHECK (laiyuan IN (0, 1)),
+    CONSTRAINT ck_xiaoxi_xuhao
+        CHECK (xuhao >= 1)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_unicode_ci
+    COMMENT = '会话消息表';
