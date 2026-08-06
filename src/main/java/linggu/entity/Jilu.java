@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import linggu.enums.Ticai;
-import linggu.enums.Zhuangtai;
+import linggu.enums.JiluZhuangtai;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class Jilu {
     @TableField("zhengwen")
     private String zhengwen;//存储的正文，会不断更新
     @TableField("zhuangtai")
-    private Zhuangtai zhuangtai;//记录状态，0为未完成，1为完成
+    private JiluZhuangtai jiluZhuangtai;//记录状态，0为未完成，1为完成
     @TableField("yonghu_id")
     private String yonghuId;//所属用户的用户ID
     @TableField(value = "chuangjian_shijian", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)

@@ -42,7 +42,7 @@ public class JiluController {
         return Result.success(jiluService.chakan(yonghuId, jiluId));
     }
     @GetMapping("/chakanliebiao")
-    public Result<List<JiluLiebiaoVO>> chakanLiebiao(@RequestAttribute String yonghuId){
+    public Result<List<JiluLiebiaoVO>> chakanJiluLiebiao(@RequestAttribute String yonghuId){
         return Result.success(jiluService.chakanLiebiao(yonghuId));
     }
     @DeleteMapping("/shanchu")
@@ -54,7 +54,7 @@ public class JiluController {
         return Result.success();
     }
     @DeleteMapping("/piliangshanchu")
-    public Result<Void> piliangShanchu(@RequestAttribute String yonghuId,@RequestBody List<String> jiluIdList){
+    public Result<Void> piliangShanchuJilu(@RequestAttribute String yonghuId,@RequestBody List<String> jiluIdList){
         boolean success= jiluService.piliangShanchu(yonghuId, jiluIdList);
         if (!success){
             return Result.fail(500,"内部错误，记录批量删除失败。");

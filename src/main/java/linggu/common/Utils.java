@@ -16,9 +16,9 @@ public class Utils {
         return BCrypt.hashpw(mima);
     }
     //加密检查，比对未加密的和已加密的字符串
-    public static boolean jiamiJiancha(String a,String b){
-        if (StrUtil.isNotBlank(a)){
-            return BCrypt.checkpw(a,b);
+    public static boolean jiamiJiancha(String yuanMima,String jiamiMima){
+        if (StrUtil.isNotBlank(yuanMima)){
+            return BCrypt.checkpw(yuanMima,jiamiMima);
         }
         return false;
     }

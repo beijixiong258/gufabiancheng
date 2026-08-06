@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static linggu.enums.Zhuangtai.DRAFT;
+import static linggu.enums.JiluZhuangtai.DRAFT;
 
 @Service
 @RequiredArgsConstructor
@@ -61,15 +61,15 @@ public class XiaoxiServiceImpl extends ServiceImpl<XiaoxiMapper, Xiaoxi> impleme
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Xiaoxi baocunAIHuifu(String yonghuId, String huihuaId, String huifu) {
+    public Xiaoxi baocunAIShengchengJieguo(String yonghuId, String huihuaId, String zhengwen) {
         Huihua huihua=huihuaService.chakan(yonghuId, huihuaId);
-        Xiaoxi xiaoxi=xinjian(yonghuId,huihuaId,huifu,0);
+        Xiaoxi xiaoxi=xinjian(yonghuId,huihuaId,zhengwen,0);
 
         boolean success=jiluService.update(new LambdaUpdateWrapper<Jilu>()
                 .eq(Jilu::getId,huihua.getJiluId())
                 .eq(Jilu::getYonghuId,yonghuId)
-                .set(Jilu::getZhengwen,huifu)
-                .set(Jilu::getZhuangtai,DRAFT)
+                .set(Jilu::getZhengwen,zhengwen)
+                .set(Jilu::getJiluZhuangtai,DRAFT)
         );
         if (!success){
             throw new CommonException(500,"内部错误，正文更新失败。");

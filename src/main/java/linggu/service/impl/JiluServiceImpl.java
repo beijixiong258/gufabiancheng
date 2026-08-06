@@ -10,7 +10,7 @@ import linggu.common.Utils;
 import linggu.dto.JiluXinjianDTO;
 import linggu.dto.JiluXiugaiDTO;
 import linggu.entity.Jilu;
-import linggu.enums.Zhuangtai;
+import linggu.enums.JiluZhuangtai;
 import linggu.mapper.JiluMapper;
 import linggu.service.JiluService;
 import linggu.vo.JiluLiebiaoVO;
@@ -29,7 +29,7 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
         BeanUtil.copyProperties(jiluXinjianDTO,jilu);
         jilu.setId(Utils.generateId())
                 .setYonghuId(yonghuId)
-                .setZhuangtai(Zhuangtai.DRAFT);
+                .setJiluZhuangtai(JiluZhuangtai.DRAFT);
         boolean success=save(jilu);
         if (!success){
             throw new CommonException(500,"内部错误，新建失败");
@@ -49,7 +49,7 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
         if (StrUtil.isBlank(jilu.getZhengwen())){
             throw new CommonException(400, "正文为空，操作非法。");
         }
-        jilu.setZhuangtai(Zhuangtai.FINISH);
+        jilu.setJiluZhuangtai(JiluZhuangtai.FINISH);
         return updateById(jilu);
     }
 
@@ -63,7 +63,7 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
             throw new CommonException(404,"记录不存在。");
         }
         BeanUtil.copyProperties(jiluXiugaiDTO,jilu);
-        jilu.setZhuangtai(Zhuangtai.DRAFT);
+        jilu.setJiluZhuangtai(JiluZhuangtai.DRAFT);
         return updateById(jilu);
     }
 
@@ -81,11 +81,11 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
 
     @Override
     public List<JiluLiebiaoVO> chakanLiebiao(String yonghuId) {
-        List<Jilu> list=list(new LambdaQueryWrapper<Jilu>()
+        List<Jilu> jiluList=list(new LambdaQueryWrapper<Jilu>()
                 .eq(Jilu::getYonghuId,yonghuId)
                 .orderByDesc(Jilu::getXiugaiShijian)
         );
-        return BeanUtil.copyToList(list, JiluLiebiaoVO.class);
+        return BeanUtil.copyToList(jiluList, JiluLiebiaoVO.class);
     }
 
     @Override
@@ -102,20 +102,20 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean piliangShanchu(String yonghuid,List<String> jiluIdList) {
+    public boolean piliangShanchu(String yonghuId,List<String> jiluIdList) {
         if (ObjectUtil.isEmpty(jiluIdList)){
             throw new CommonException(400,"ID列表为空。");
         }
         if (jiluIdList.stream().anyMatch(id -> StrUtil.isBlank(id))) {
             throw new CommonException(400, "存在为空的ID。");
         }
-        List<String> list=jiluIdList.stream().distinct().toList();
-        LambdaQueryWrapper<Jilu> lambdaQueryWrapper=new LambdaQueryWrapper<Jilu>()
-                .eq(Jilu::getYonghuId,yonghuid)
-                .in(Jilu::getId,list);
-        if (count(lambdaQueryWrapper)!=list.size()){
+        List<String> quchongJiluIdList=jiluIdList.stream().distinct().toList();
+        LambdaQueryWrapper<Jilu> jiluQueryWrapper=new LambdaQueryWrapper<Jilu>()
+                .eq(Jilu::getYonghuId,yonghuId)
+                .in(Jilu::getId,quchongJiluIdList);
+        if (count(jiluQueryWrapper)!=quchongJiluIdList.size()){
             throw new CommonException(404,"部分记录不存在。");
         }
-        return remove(lambdaQueryWrapper);
+        return remove(jiluQueryWrapper);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,7 +19,9 @@ public class GlobalExceptionHandler {
     //处理参数校验异常
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
-        String message= e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        String message=e.getBindingResult().getAllErrors().stream().findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("请求参数校验失败。");
         return Result.fail(400,message);
     }
     //处理违反注解异常
@@ -34,6 +37,11 @@ public class GlobalExceptionHandler {
     public Result<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         String message = "缺少请求参数：" + e.getParameterName();
         return Result.fail(400, message);
+    }
+    //处理请求参数类型错误
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Result<Void> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return Result.fail(400, "请求参数类型错误：" + e.getName());
     }
     //处理参数绑定异常
     @ExceptionHandler(BindException.class)

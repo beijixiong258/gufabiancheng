@@ -5,6 +5,10 @@ spring:
   config:
     import: "optional:file:./.env[.properties]"
 
+  sql:
+    init:
+      mode: always
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/jiluzhushou?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false

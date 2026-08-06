@@ -2,7 +2,7 @@ package linggu.vo;
 
 import cn.hutool.core.date.DateTime;
 import linggu.enums.Ticai;
-import linggu.enums.Zhuangtai;
+import linggu.enums.JiluZhuangtai;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -13,7 +13,7 @@ public class JiluLiebiaoVO {
     private String timu;
     private Ticai ticai;
     private String biaoqian;
-    private Zhuangtai zhuangtai;
+    private JiluZhuangtai jiluZhuangtai;
     private DateTime chuangjianShijian;
     private DateTime xiugaiShijian;
 }

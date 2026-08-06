@@ -25,6 +25,7 @@ public class YonghuXinjianDTO {
     @Pattern(regexp = SHENFENZHENG,message = "身份证号非法")
     private String shenfenzheng;
     @Pattern(regexp = YOUXIANG,message = "邮箱非法")
+    @Size(max = 255,message = "邮箱长度不能超过255位")
     private String youxiang;
     @NotNull(message = "请输入权限")
     private Quanxian quanxian;
