@@ -50,4 +50,10 @@ public class HuihuaServiceImpl extends ServiceImpl<HuihuaMapper, Huihua> impleme
         jiluService.chakan(yonghuId, jiluId);
         return list(new LambdaQueryWrapper<Huihua>().eq(Huihua::getJiluId,jiluId));
     }
+
+    @Override
+    public boolean shanchu(String yonghuId, String huihuaId) {
+        Huihua huihua=chakan(yonghuId, huihuaId);
+        return (removeById(huihua));
+    }
 }

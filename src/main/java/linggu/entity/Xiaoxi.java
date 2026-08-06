@@ -1,6 +1,6 @@
 package linggu.entity;
 
-import cn.hutool.core.date.DateTime;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -26,5 +26,5 @@ public class Xiaoxi {
     @TableField("xuhao")
     private int xuhao;//消息在会话中的序号
     @TableField("chansheng_shijian")
-    private DateTime chanshengShijian;//消息的产生时间
+    private LocalDateTime chanshengShijian;//消息的产生时间
 }

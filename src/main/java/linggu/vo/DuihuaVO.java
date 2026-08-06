@@ -1,7 +1,7 @@
 package linggu.vo;
 
 import linggu.entity.Xiaoxi;
-import linggu.enums.HuihuaZhuangtai;
+import linggu.enums.DuihuaZhuangtai;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -10,5 +10,5 @@ import lombok.experimental.Accessors;
 public class DuihuaVO {
     private Xiaoxi renleiXiaoxi;//人类消息
     private Xiaoxi aiHuida;//AI回答
-    private HuihuaZhuangtai zhuangtai;//当前会话状态
+    private DuihuaZhuangtai zhuangtai;//当前会话状态
 }

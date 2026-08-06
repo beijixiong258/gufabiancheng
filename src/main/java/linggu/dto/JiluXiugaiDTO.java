@@ -17,5 +17,6 @@ public class JiluXiugaiDTO {
     private Ticai ticai;
     @Size(max = 20, message = "标签不超过20位。")
     private String biaoqian;
+    @Size(max = 2000, message = "正文长度不能超过2000个字符。")
     private String zhengwen;
 }

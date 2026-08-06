@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum HuihuaZhuangtai {
+public enum DuihuaZhuangtai {
     OVER(0),
     CONTINUE(1),
     WAIT(2);

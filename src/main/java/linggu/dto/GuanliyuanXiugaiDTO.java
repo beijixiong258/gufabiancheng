@@ -1,0 +1,34 @@
+package linggu.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import linggu.enums.Quanxian;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import static linggu.common.Validation.DIANHUA;
+import static linggu.common.Validation.SHENFENZHENG;
+import static linggu.common.Validation.YOUXIANG;
+
+@Data
+@Accessors(chain = true)
+public class GuanliyuanXiugaiDTO {
+    @NotBlank(message = "请输入用户ID")
+    private String id;
+    @NotBlank(message = "请输入账号")
+    @Size(min = 4, max = 32, message = "账号应为4-32位")
+    private String zhanghao;
+    @Pattern(regexp = "^\\s*$|^[\\s\\S]{6,32}$", message = "密码应为6-32位")
+    private String mima;
+    @Pattern(regexp = "^$|" + DIANHUA, message = "手机号非法")
+    private String dianhua;
+    @Pattern(regexp = "^$|" + SHENFENZHENG, message = "身份证号非法")
+    private String shenfenzheng;
+    @Pattern(regexp = "^$|" + YOUXIANG, message = "邮箱非法")
+    @Size(max = 255, message = "邮箱长度不能超过255位")
+    private String youxiang;
+    @NotNull(message = "请输入权限")
+    private Quanxian quanxian;
+}

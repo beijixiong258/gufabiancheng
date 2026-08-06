@@ -25,4 +25,11 @@ public class HuihuaController {
     public Result<List<Huihua>> chakanHuihuaLiebiao(@RequestAttribute String yonghuId,@RequestParam String jiluId){
         return Result.success(huihuaService.chakanLiebiao(yonghuId, jiluId));
     }
+    @DeleteMapping("/shanchu")
+    public Result<Void> shanchuHuihua(@RequestAttribute String yonghuId, @RequestParam String huihuaId) {
+        if (!huihuaService.shanchu(yonghuId, huihuaId)) {
+            return Result.fail(500, "内部错误，会话删除失败。");
+        }
+        return Result.success();
+    }
 }

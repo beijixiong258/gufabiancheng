@@ -2,8 +2,8 @@ package linggu.controller;
 
 import jakarta.validation.Valid;
 import linggu.common.Result;
+import linggu.dto.GuanliyuanXiugaiDTO;
 import linggu.dto.YonghuXinjianDTO;
-import linggu.entity.Yonghu;
 import linggu.service.YonghuService;
 import linggu.vo.GuanliyuanChakanVO;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ public class GuanliyuanController {
         return Result.success(yonghuService.chakanLiebiao());
     }
     @PutMapping("/modify")
-    public Result<Void> xiugaiYonghu(@RequestBody Yonghu yonghu){
-        if (!yonghuService.xiugai(yonghu)){
+    public Result<Void> xiugaiYonghu(@Valid @RequestBody GuanliyuanXiugaiDTO guanliyuanXiugaiDTO){
+        if (!yonghuService.xiugai(guanliyuanXiugaiDTO)){
             return Result.fail(500,"内部错误，用户修改失败。");
         }
         return Result.success();

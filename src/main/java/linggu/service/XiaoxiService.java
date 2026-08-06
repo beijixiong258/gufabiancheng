@@ -7,5 +7,4 @@ import java.util.List;
 public interface XiaoxiService {
     Xiaoxi xinjian(String yonghuId,String huihuaId,String neirong,int laiyuan);
     List<Xiaoxi> chakanLiebiao(String yonghuId,String huihuaId);
-    Xiaoxi baocunAIShengchengJieguo(String yonghuId,String huihuaId,String zhengwen);
 }

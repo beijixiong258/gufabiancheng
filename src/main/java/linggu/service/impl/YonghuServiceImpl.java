@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import linggu.common.CommonException;
 import linggu.common.LoginManager;
 import linggu.common.Utils;
+import linggu.dto.GuanliyuanXiugaiDTO;
 import linggu.dto.YonghuDengluDTO;
 import linggu.dto.YonghuXiugaiDTO;
 import linggu.dto.YonghuXinjianDTO;
@@ -153,23 +154,30 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean xiugai(Yonghu yonghu) {
-        if (getById(yonghu.getId())==null){
+    public boolean xiugai(GuanliyuanXiugaiDTO guanliyuanXiugaiDTO) {
+        String yonghuId=guanliyuanXiugaiDTO.getId();
+        if (getById(yonghuId)==null){
             throw new CommonException(404,"用户不存在。");
         }
-        String zhanghao=yonghu.getZhanghao();
+        String zhanghao=guanliyuanXiugaiDTO.getZhanghao();
         LambdaQueryWrapper<Yonghu> lambdaQueryWrapper=new LambdaQueryWrapper<Yonghu>()
                 .eq(Yonghu::getZhanghao,zhanghao)
-                .ne(Yonghu::getId,yonghu.getId());
+                .ne(Yonghu::getId,yonghuId);
         if (!list(lambdaQueryWrapper).isEmpty()){
             throw new CommonException(400,"账号重复");
         }
-        String mima = yonghu.getMima();
-        if (mima==null || mima.isBlank()) {
-            mima="000000";
+        LambdaUpdateWrapper<Yonghu> lambdaUpdateWrapper=new LambdaUpdateWrapper<Yonghu>()
+                .eq(Yonghu::getId,yonghuId)
+                .set(Yonghu::getZhanghao,zhanghao)
+                .set(guanliyuanXiugaiDTO.getDianhua()!=null,Yonghu::getDianhua,guanliyuanXiugaiDTO.getDianhua())
+                .set(guanliyuanXiugaiDTO.getShenfenzheng()!=null,Yonghu::getShenfenzheng,guanliyuanXiugaiDTO.getShenfenzheng())
+                .set(guanliyuanXiugaiDTO.getYouxiang()!=null,Yonghu::getYouxiang,guanliyuanXiugaiDTO.getYouxiang())
+                .set(Yonghu::getQuanxian,guanliyuanXiugaiDTO.getQuanxian());
+        String mima=guanliyuanXiugaiDTO.getMima();
+        if (mima!=null && !mima.isBlank()) {
+            lambdaUpdateWrapper.set(Yonghu::getMima,Utils.mimaJiami(mima));
         }
-        yonghu.setMima(Utils.mimaJiami(mima));
-        return (updateById(yonghu));
+        return update(lambdaUpdateWrapper);
     }
 
     @Override

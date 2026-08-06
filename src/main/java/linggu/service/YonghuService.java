@@ -1,6 +1,7 @@
 package linggu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import linggu.dto.GuanliyuanXiugaiDTO;
 import linggu.dto.YonghuDengluDTO;
 import linggu.dto.YonghuXiugaiDTO;
 import linggu.dto.YonghuXinjianDTO;
@@ -23,6 +24,6 @@ public interface YonghuService extends IService<Yonghu> {
 
     GuanliyuanChakanVO chakanYonghu(String yonghuId);//查看单个用户，只用于管理员查人
     List<GuanliyuanChakanVO> chakanLiebiao();//管理员查看用户列表
-    boolean xiugai(Yonghu yonghu);//管理员全量修改用户信息
+    boolean xiugai(GuanliyuanXiugaiDTO guanliyuanXiugaiDTO);//管理员修改用户信息，空密码不更新
     boolean shanchu(String yonghuId);//管理员删除用户
 }

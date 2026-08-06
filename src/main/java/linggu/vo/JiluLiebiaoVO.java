@@ -1,6 +1,6 @@
 package linggu.vo;
 
-import cn.hutool.core.date.DateTime;
+import java.time.LocalDateTime;
 import linggu.enums.Ticai;
 import linggu.enums.JiluZhuangtai;
 import lombok.Data;
@@ -14,6 +14,6 @@ public class JiluLiebiaoVO {
     private Ticai ticai;
     private String biaoqian;
     private JiluZhuangtai jiluZhuangtai;
-    private DateTime chuangjianShijian;
-    private DateTime xiugaiShijian;
+    private LocalDateTime chuangjianShijian;
+    private LocalDateTime xiugaiShijian;
 }
