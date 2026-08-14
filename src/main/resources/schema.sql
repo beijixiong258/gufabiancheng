@@ -68,23 +68,20 @@ CREATE TABLE IF NOT EXISTS huihua
 
 CREATE TABLE IF NOT EXISTS xiaoxi
 (
-    id                 VARCHAR(64) NOT NULL COMMENT '消息ID',
-    huihua_id          VARCHAR(64) NOT NULL COMMENT '所属会话ID',
-    neirong            LONGTEXT    NOT NULL COMMENT '消息内容',
-    laiyuan            TINYINT     NOT NULL COMMENT '来源：0 AI，1用户',
-    xuhao              INT         NOT NULL COMMENT '消息在会话中的序号',
-    chansheng_shijian  DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '消息产生时间',
+    id                 BIGINT       NOT NULL AUTO_INCREMENT COMMENT 'AI记忆消息ID',
+    huihua_id          VARCHAR(64)  NOT NULL COMMENT '所属会话ID',
+    type               VARCHAR(20)  NOT NULL COMMENT '消息类型：USER、ASSISTANT、SYSTEM',
+    neirong            LONGTEXT     NOT NULL COMMENT '消息内容',
+    chansheng_shijian  DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '消息产生时间',
 
     PRIMARY KEY (id),
-    UNIQUE KEY uk_xiaoxi_huihua_xuhao (huihua_id, xuhao),
+    KEY idx_xiaoxi_huihua_id_id (huihua_id, id),
     CONSTRAINT fk_xiaoxi_huihua
         FOREIGN KEY (huihua_id) REFERENCES huihua (id)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
-    CONSTRAINT ck_xiaoxi_laiyuan
-        CHECK (laiyuan IN (0, 1)),
-    CONSTRAINT ck_xiaoxi_xuhao
-        CHECK (xuhao >= 1)
+    CONSTRAINT ck_xiaoxi_type
+        CHECK (type IN ('USER', 'ASSISTANT', 'SYSTEM'))
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4

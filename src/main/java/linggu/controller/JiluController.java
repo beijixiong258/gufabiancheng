@@ -17,11 +17,11 @@ import java.util.List;
 @RequestMapping("/jilu")
 public class JiluController {
     private final JiluService jiluService;
-    @PostMapping("/xinjian")
+    @PostMapping("/add")
     public Result<Jilu> xinjianJilu(@RequestAttribute String yonghuId,@Valid @RequestBody JiluXinjianDTO jiluXinjianDTO){
         return Result.success(jiluService.xinjian(yonghuId,jiluXinjianDTO));
     }
-    @PutMapping("/xiugai")
+    @PutMapping("/modify")
     public Result<Void> xiugaiJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId, @Valid @RequestBody JiluXiugaiDTO jiluXiugaiDTO){
         boolean success=jiluService.xiugai(yonghuId,jiluId,jiluXiugaiDTO);
         if (!success){
@@ -29,7 +29,7 @@ public class JiluController {
         }
         return Result.success();
     }
-    @PutMapping("/wancheng")
+    @PutMapping("/finish")
     public Result<Void> wanchengJilu(@RequestAttribute String yonghuId, @RequestParam("id") String jiluId) {
         boolean success = jiluService.wancheng(yonghuId, jiluId);
         if (!success) {
@@ -37,15 +37,15 @@ public class JiluController {
         }
         return Result.success();
     }
-    @GetMapping("/chakan")
+    @GetMapping("/get")
     public Result<Jilu> chakanJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId){
         return Result.success(jiluService.chakan(yonghuId, jiluId));
     }
-    @GetMapping("/chakanliebiao")
+    @GetMapping("/getlist")
     public Result<List<JiluLiebiaoVO>> chakanJiluLiebiao(@RequestAttribute String yonghuId){
         return Result.success(jiluService.chakanLiebiao(yonghuId));
     }
-    @DeleteMapping("/shanchu")
+    @DeleteMapping("/delete")
     public Result<Void> shanchuJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId){
         boolean success= jiluService.shanchu(yonghuId, jiluId);
         if (!success){
@@ -53,7 +53,7 @@ public class JiluController {
         }
         return Result.success();
     }
-    @DeleteMapping("/piliangshanchu")
+    @DeleteMapping("/deletebatch")
     public Result<Void> piliangShanchuJilu(@RequestAttribute String yonghuId,@RequestBody List<String> jiluIdList){
         boolean success= jiluService.piliangShanchu(yonghuId, jiluIdList);
         if (!success){

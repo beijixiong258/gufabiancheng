@@ -20,8 +20,7 @@ public class DuihuaController {
     private final AIChatService aiChatService;
 
     @PostMapping("/chat")
-    public Result<DuihuaVO> duihua(@RequestAttribute String yonghuId,
-                                   @Valid @RequestBody DuihuaDTO duihuaDTO){
+    public Result<DuihuaVO> duihua(@RequestAttribute String yonghuId, @Valid @RequestBody DuihuaDTO duihuaDTO){
         return Result.success(aiChatService.duihua(yonghuId,duihuaDTO));
     }
     @GetMapping("/getlist")

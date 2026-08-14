@@ -1,6 +1,7 @@
 package linggu.entity;
 
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,16 +16,16 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("xiaoxi")
 public class Xiaoxi {
-    @TableId("id")
-    private String id;//消息ID
+    @TableId(value = "id",type = IdType.AUTO)
+    private Long id;//消息ID
     @TableField("huihua_id")
     private String huihuaId;//所属会话ID
     @TableField("neirong")
     private String neirong;//消息的内容
-    @TableField("laiyuan")
-    private int laiyuan;//0是AI，1是人类用户
-    @TableField("xuhao")
-    private int xuhao;//消息在会话中的序号
+    @TableField("type")
+    private String type;//消息类型：USER、ASSISTANT、SYSTEM
+
+
     @TableField("chansheng_shijian")
     private LocalDateTime chanshengShijian;//消息的产生时间
 }

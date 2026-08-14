@@ -13,19 +13,19 @@ import java.util.List;
 @RequestMapping("/huihua")
 public class HuihuaController {
     private final HuihuaService huihuaService;
-    @PostMapping("/xinjian")
+    @PostMapping("/new")
     public Result<String> xinjianHuihua(@RequestAttribute String yonghuId,@RequestParam String jiluId){
         return Result.success(huihuaService.xinjian(yonghuId,jiluId));
     }
-    @GetMapping("/chakan")
+    @GetMapping("/get")
     public Result<Huihua> chakanHuihua(@RequestAttribute String yonghuId,@RequestParam String huihuaId){
         return Result.success(huihuaService.chakan(yonghuId, huihuaId));
     }
-    @GetMapping("/liebiao")
+    @GetMapping("/getlist")
     public Result<List<Huihua>> chakanHuihuaLiebiao(@RequestAttribute String yonghuId,@RequestParam String jiluId){
         return Result.success(huihuaService.chakanLiebiao(yonghuId, jiluId));
     }
-    @DeleteMapping("/shanchu")
+    @DeleteMapping("/delete")
     public Result<Void> shanchuHuihua(@RequestAttribute String yonghuId, @RequestParam String huihuaId) {
         if (!huihuaService.shanchu(yonghuId, huihuaId)) {
             return Result.fail(500, "内部错误，会话删除失败。");

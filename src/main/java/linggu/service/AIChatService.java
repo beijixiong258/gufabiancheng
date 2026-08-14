@@ -89,7 +89,7 @@ public class AIChatService {
         messageList.add(new SystemMessage(xitongTishici));
         for (Xiaoxi xiaoxi: xiaoxiList) {
             String neirong = xiaoxi.getNeirong();
-            if (xiaoxi.getLaiyuan()==1){
+            if ("USER".equals(xiaoxi.getType())) {
                 messageList.add(new UserMessage(neirong));
             }
             else{
@@ -128,7 +128,7 @@ public class AIChatService {
         else {
             neirong=aiChatResponse.getYindao();
         }
-        return xiaoxiService.xinjian(yonghuId,huihuaId,neirong,0);
+        return xiaoxiService.xinjian(yonghuId,huihuaId,neirong,"ASSISTANT");
     }
     private DuihuaVO goujianDuihuaVO(Xiaoxi renleiXiaoxi, Xiaoxi aiHuida, DuihuaZhuangtai zhuangtai) {
         return new DuihuaVO().setRenleiXiaoxi(renleiXiaoxi).setAiHuida(aiHuida).setZhuangtai(zhuangtai);
@@ -147,7 +147,7 @@ public class AIChatService {
         Jilu jilu=jiluService.chakan(yonghuId,huihua.getJiluId());
         Xiaoxi human=null;
         if (command==0) {
-            human=xiaoxiService.xinjian(yonghuId,huihuaId,duihuaDTO.getNeirong(),1);
+            human=xiaoxiService.xinjian(yonghuId,huihuaId,duihuaDTO.getNeirong(),"USER");
         }
         List<Xiaoxi> xiaoxiList = xiaoxiService.chakanLiebiao(yonghuId,huihuaId);
         String zhiling;
