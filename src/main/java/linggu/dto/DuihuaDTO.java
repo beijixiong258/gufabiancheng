@@ -18,6 +18,7 @@ public class DuihuaDTO {
     @Min(value = 0, message = "消息命令非法。")
     @Max(value = 2, message = "消息命令非法。")
     private Integer command;
+    @Size(max = 2000, message = "消息内容长度不能超过2000个字符。")
     private String neirong;
     @NotBlank(message = "当前正文不能为空。")
     @Size(max = 2000, message = "当前正文长度不能超过2000个字符。")

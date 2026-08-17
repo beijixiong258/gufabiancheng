@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import linggu.enums.XiaoxiLeixing;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class Xiaoxi {
     @TableField("neirong")
     private String neirong;//消息的内容
     @TableField("type")
-    private String type;//消息类型：USER、ASSISTANT、SYSTEM
+    private XiaoxiLeixing type;//消息类型：USER、ASSISTANT、SYSTEM
 
 
     @TableField("chansheng_shijian")

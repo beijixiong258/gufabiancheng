@@ -1,16 +1,17 @@
 package linggu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import linggu.common.CommonException;
 
 import linggu.entity.Xiaoxi;
+import linggu.enums.XiaoxiLeixing;
 import linggu.mapper.XiaoxiMapper;
 import linggu.service.HuihuaService;
 import linggu.service.XiaoxiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,8 +20,9 @@ import java.util.List;
 public class XiaoxiServiceImpl extends ServiceImpl<XiaoxiMapper, Xiaoxi> implements XiaoxiService {
     private final HuihuaService huihuaService;
     @Override
-    public Xiaoxi xinjian(String yonghuId, String huihuaId, String neirong, String type) {
-        if (!"USER".equals(type) && !"ASSISTANT".equals(type)) {
+    @Transactional(rollbackFor = Exception.class)
+    public Xiaoxi xinjian(String yonghuId, String huihuaId, String neirong, XiaoxiLeixing type) {
+        if (type == null) {
             throw new CommonException(400, "消息来源非法。");
         }
         huihuaService.chakan(yonghuId, huihuaId);
@@ -34,14 +36,27 @@ public class XiaoxiServiceImpl extends ServiceImpl<XiaoxiMapper, Xiaoxi> impleme
         if (!save(xiaoxi)){
             throw new CommonException(500,"内部错误，消息新建失败。");
         }
-        return getById(xiaoxi.getId());
+        Xiaoxi baocunJieguo = getById(xiaoxi.getId());
+        if (baocunJieguo == null) {
+            throw new CommonException(500, "内部错误，消息读取失败。");
+        }
+        return baocunJieguo;
     }
     @Override
     public List<Xiaoxi> chakanLiebiao(String yonghuId, String huihuaId) {
         huihuaService.chakan(yonghuId, huihuaId);
-        return list(new LambdaQueryWrapper<Xiaoxi>()
+        return lambdaQuery()
                 .eq(Xiaoxi::getHuihuaId,huihuaId)
                 .orderByAsc(Xiaoxi::getId)
-        );
+                .list();
+    }
+
+    @Override
+    public boolean shanchu(String yonghuId, String huihuaId, Long xiaoxiId) {
+        huihuaService.chakan(yonghuId,huihuaId);
+        return lambdaUpdate()
+                .eq(Xiaoxi::getId,xiaoxiId)
+                .eq(Xiaoxi::getHuihuaId,huihuaId)
+                .remove();
     }
 }

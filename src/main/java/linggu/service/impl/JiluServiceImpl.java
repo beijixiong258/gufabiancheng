@@ -39,40 +39,51 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
 
     @Override
     public boolean wancheng(String yonghuId, String jiluId) {
-        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+        Jilu jilu=lambdaQuery()
                 .eq(Jilu::getId,jiluId)
                 .eq(Jilu::getYonghuId,yonghuId)
-        );
+                .one();
         if (jilu==null){
             throw new CommonException(404,"记录不存在。");
         }
         if (StrUtil.isBlank(jilu.getZhengwen())){
             throw new CommonException(400, "正文为空，操作非法。");
         }
-        jilu.setJiluZhuangtai(JiluZhuangtai.FINISH);
-        return updateById(jilu);
+        return lambdaUpdate()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+                .isNotNull(Jilu::getZhengwen)
+                .apply("TRIM(zhengwen) <> ''")
+                .set(Jilu::getJiluZhuangtai,JiluZhuangtai.FINISH)
+                .update();
     }
 
     @Override
     public boolean xiugai(String yonghuId, String jiluId, JiluXiugaiDTO jiluXiugaiDTO) {
-        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+        Jilu jilu=lambdaQuery()
                 .eq(Jilu::getId,jiluId)
                 .eq(Jilu::getYonghuId,yonghuId)
-        );
+                .one();
         if (jilu==null){
             throw new CommonException(404,"记录不存在。");
         }
-        BeanUtil.copyProperties(jiluXiugaiDTO,jilu);
-        jilu.setJiluZhuangtai(JiluZhuangtai.DRAFT);
-        return updateById(jilu);
+        return lambdaUpdate()
+                .eq(Jilu::getId,jiluId)
+                .eq(Jilu::getYonghuId,yonghuId)
+                .set(Jilu::getTimu,jiluXiugaiDTO.getTimu())
+                .set(Jilu::getTicai,jiluXiugaiDTO.getTicai())
+                .set(jiluXiugaiDTO.getBiaoqian()!=null,Jilu::getBiaoqian,jiluXiugaiDTO.getBiaoqian())
+                .set(jiluXiugaiDTO.getZhengwen()!=null,Jilu::getZhengwen,jiluXiugaiDTO.getZhengwen())
+                .set(Jilu::getJiluZhuangtai,JiluZhuangtai.DRAFT)
+                .update();
     }
 
     @Override
     public Jilu chakan(String yonghuId,String jiluId) {
-        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+        Jilu jilu=lambdaQuery()
                 .eq(Jilu::getId,jiluId)
                 .eq(Jilu::getYonghuId,yonghuId)
-        );
+                .one();
         if (jilu==null){
             throw new CommonException(404,"记录不存在。");
         }
@@ -81,19 +92,19 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
 
     @Override
     public List<JiluLiebiaoVO> chakanLiebiao(String yonghuId) {
-        List<Jilu> jiluList=list(new LambdaQueryWrapper<Jilu>()
+        List<Jilu> jiluList=lambdaQuery()
                 .eq(Jilu::getYonghuId,yonghuId)
                 .orderByDesc(Jilu::getXiugaiShijian)
-        );
+                .list();
         return BeanUtil.copyToList(jiluList, JiluLiebiaoVO.class);
     }
 
     @Override
     public boolean shanchu(String yonghuId,String jiluId) {
-        Jilu jilu=getOne(new LambdaQueryWrapper<Jilu>()
+        Jilu jilu=lambdaQuery()
                 .eq(Jilu::getId,jiluId)
                 .eq(Jilu::getYonghuId,yonghuId)
-        );
+                .one();
         if (jilu==null){
             throw new CommonException(404,"记录不存在。");
         }

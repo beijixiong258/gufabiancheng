@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ZhengwenValidationTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+    // 验证记录正文允许2000个字符并拒绝2001个字符。
     @Test
     void jiluZhengwenAllows2000CharactersAndRejects2001Characters() {
         JiluXiugaiDTO dto = new JiluXiugaiDTO()
@@ -28,6 +29,7 @@ class ZhengwenValidationTest {
         assertThat(messages(dto)).containsExactly("正文长度不能超过2000个字符。");
     }
 
+    // 验证AI请求正文必填并拒绝超过2000个字符。
     @Test
     void duihuaZhengwenRequiresContentAndRejects2001Characters() {
         DuihuaDTO dto = new DuihuaDTO()

@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import linggu.common.Result;
 import linggu.dto.DuihuaDTO;
 import linggu.entity.Xiaoxi;
-import linggu.service.AIChatService;
+import linggu.ai.AIChatService;
 import linggu.service.XiaoxiService;
 import linggu.vo.DuihuaVO;
 import lombok.RequiredArgsConstructor;

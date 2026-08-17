@@ -10,5 +10,5 @@ import lombok.experimental.Accessors;
 public class DuihuaVO {
     private Xiaoxi renleiXiaoxi;//人类消息
     private Xiaoxi aiHuida;//AI回答
-    private DuihuaZhuangtai zhuangtai;//当前会话状态
+    private DuihuaZhuangtai zhuangtai;//本次AI处理结果
 }

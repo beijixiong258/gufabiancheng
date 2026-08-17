@@ -1,6 +1,8 @@
 package linggu.common;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -59,6 +61,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         return Result.fail(400, "请求体格式错误。");
+    }
+    //处理请求方法错误
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return Result.fail(400, "请求方法不支持。");
+    }
+    //处理Content-Type错误
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public Result<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+        return Result.fail(400, "Content-Type不支持。");
     }
     //处理其它异常
     @ExceptionHandler(Exception.class)

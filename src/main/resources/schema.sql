@@ -32,13 +32,10 @@ CREATE TABLE IF NOT EXISTS jilu
         ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '修改时间',
 
     PRIMARY KEY (id),
-    KEY idx_jilu_yonghu_zhuangtai (yonghu_id, zhuangtai, xiugai_shijian),
-    KEY idx_jilu_yonghu_ticai (yonghu_id, ticai),
-    KEY idx_jilu_yonghu_biaoqian (yonghu_id, biaoqian),
+    KEY idx_jilu_yonghu_xiugai_shijian (yonghu_id, xiugai_shijian),
     CONSTRAINT fk_jilu_yonghu
         FOREIGN KEY (yonghu_id) REFERENCES yonghu (id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE,
+            ON DELETE CASCADE,
     CONSTRAINT ck_jilu_ticai
         CHECK (ticai IN (0, 1, 2, 3, 4)),
     CONSTRAINT ck_jilu_zhuangtai
@@ -59,7 +56,6 @@ CREATE TABLE IF NOT EXISTS huihua
     CONSTRAINT fk_huihua_jilu
         FOREIGN KEY (jilu_id) REFERENCES jilu (id)
             ON DELETE CASCADE
-            ON UPDATE CASCADE
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
@@ -78,8 +74,7 @@ CREATE TABLE IF NOT EXISTS xiaoxi
     KEY idx_xiaoxi_huihua_id_id (huihua_id, id),
     CONSTRAINT fk_xiaoxi_huihua
         FOREIGN KEY (huihua_id) REFERENCES huihua (id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE,
+            ON DELETE CASCADE,
     CONSTRAINT ck_xiaoxi_type
         CHECK (type IN ('USER', 'ASSISTANT', 'SYSTEM'))
 )
