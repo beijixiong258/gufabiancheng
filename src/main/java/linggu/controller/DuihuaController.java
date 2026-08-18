@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import linggu.common.Result;
 import linggu.dto.DuihuaDTO;
 import linggu.entity.Xiaoxi;
-import linggu.ai.AIChatService;
+import linggu.service.ChatService;
 import linggu.service.XiaoxiService;
 import linggu.vo.DuihuaVO;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.List;
 @RequestMapping("/duihua")
 public class DuihuaController {
     private final XiaoxiService xiaoxiService;
-    private final AIChatService aiChatService;
+    private final ChatService chatService;
 
     @PostMapping("/chat")
     public Result<DuihuaVO> duihua(@RequestAttribute String yonghuId, @Valid @RequestBody DuihuaDTO duihuaDTO){
-        return Result.success(aiChatService.duihua(yonghuId,duihuaDTO));
+        return Result.success(chatService.duihua(yonghuId,duihuaDTO));
     }
     @GetMapping("/getlist")
     public Result<List<Xiaoxi>> chakanXiaoxiLiebiao(@RequestAttribute String yonghuId, @RequestParam String huihuaId){
@@ -29,7 +29,7 @@ public class DuihuaController {
     }
     @GetMapping("/test")
     public Result<Void> lianjie(){
-        boolean success=aiChatService.lianjie();
+        boolean success= chatService.lianjie();
         if (!success){
             return Result.fail(500,"AI连接失败。");
         }

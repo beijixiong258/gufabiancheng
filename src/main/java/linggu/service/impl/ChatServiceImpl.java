@@ -1,6 +1,8 @@
-package linggu.ai;
+package linggu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import linggu.ai.AIChatResponse;
+import linggu.ai.AIResponseParser;
 import linggu.common.CommonException;
 import linggu.dto.DuihuaDTO;
 import linggu.entity.Huihua;
@@ -8,6 +10,7 @@ import linggu.entity.Jilu;
 import linggu.entity.Xiaoxi;
 import linggu.enums.DuihuaZhuangtai;
 import linggu.enums.XiaoxiLeixing;
+import linggu.service.ChatService;
 import linggu.service.HuihuaService;
 import linggu.service.JiluService;
 import linggu.service.XiaoxiService;
@@ -32,7 +35,7 @@ import static linggu.ai.AIConstant.XITONGTISHICI;
 
 @Service
 @RequiredArgsConstructor
-public class AIChatService {
+public class ChatServiceImpl implements ChatService {
     private final ChatClient.Builder chatClientBuilder;
     private final XiaoxiService xiaoxiService;
     private final HuihuaService huihuaService;
@@ -41,10 +44,16 @@ public class AIChatService {
     private final AIResponseParser aiResponseParser;
     private final ConcurrentHashMap<String, Object> concurrentHashMap = new ConcurrentHashMap<>();
 
+    @Override
     public boolean lianjie() {
-        return StrUtil.isNotBlank(chatClientBuilder.build().prompt()
-                .user(CESHIXIAOXI)
-                .call().content());
+        try {
+            return StrUtil.isNotBlank(chatClientBuilder.build().prompt()
+                    .user(CESHIXIAOXI)
+                    .call().content());
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     private List<Message> zuzhuangAIXiaoxi(List<Message> messageList, Jilu jilu, String zhiling, String zhengwen) {
@@ -102,6 +111,7 @@ public class AIChatService {
                 .setZhuangtai(zhuangtai);
     }
 
+    @Override
     public DuihuaVO duihua(String yonghuId, DuihuaDTO duihuaDTO) {
         Integer command = duihuaDTO.getCommand();
         if (command == null || command < 0 || command > 2) {

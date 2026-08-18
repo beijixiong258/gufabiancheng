@@ -1,6 +1,7 @@
-package linggu.ai;
+package linggu.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import linggu.ai.AIResponseParser;
 import linggu.common.CommonException;
 import linggu.dto.DuihuaDTO;
 import linggu.entity.Huihua;
@@ -37,14 +38,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AIChatServiceTest {
+class ChatServiceImplTest {
     private ChatClient.Builder chatClientBuilder;
     private ChatClient chatClient;
     private XiaoxiService xiaoxiService;
     private HuihuaService huihuaService;
     private JiluService jiluService;
     private ChatMemory chatMemory;
-    private AIChatService aiChatService;
+    private ChatServiceImpl chatService;
 
     // 初始化AI对话测试所需的依赖和模拟对象。
     @BeforeEach
@@ -78,7 +79,7 @@ class AIChatServiceTest {
                             .setType(type);
                 });
 
-        aiChatService = new AIChatService(
+        chatService = new ChatServiceImpl(
                 chatClientBuilder,
                 xiaoxiService,
                 huihuaService,
@@ -86,6 +87,42 @@ class AIChatServiceTest {
                 chatMemory,
                 new AIResponseParser(new ObjectMapper())
         );
+    }
+
+    // 验证AI连接测试在模型回复非空白时成功。
+    @Test
+    void connectionSucceedsWhenReplyIsNotBlank() {
+        when(chatClient.prompt()
+                .user(anyString())
+                .call()
+                .content())
+                .thenReturn("连接成功");
+
+        assertThat(chatService.lianjie()).isTrue();
+    }
+
+    // 验证AI连接测试在模型回复空白时失败。
+    @Test
+    void connectionFailsWhenReplyIsBlank() {
+        when(chatClient.prompt()
+                .user(anyString())
+                .call()
+                .content())
+                .thenReturn(" ");
+
+        assertThat(chatService.lianjie()).isFalse();
+    }
+
+    // 验证AI连接调用异常时统一判定失败。
+    @Test
+    void connectionFailsWhenCallThrowsException() {
+        when(chatClient.prompt()
+                .user(anyString())
+                .call()
+                .content())
+                .thenThrow(new RuntimeException("模拟连接异常"));
+
+        assertThat(chatService.lianjie()).isFalse();
     }
 
     // 验证普通对话可以接受三种合法AI状态。
@@ -159,7 +196,7 @@ class AIChatServiceTest {
                 .content())
                 .thenThrow(new RuntimeException("模拟AI调用失败"));
 
-        assertThatThrownBy(() -> aiChatService.duihua("user-1", request(0)))
+        assertThatThrownBy(() -> chatService.duihua("user-1", request(0)))
                 .isInstanceOf(CommonException.class);
 
         verify(xiaoxiService).shanchu("user-1", "huihua-1", 101L);
@@ -206,7 +243,7 @@ class AIChatServiceTest {
                 .content())
                 .thenReturn(aiJson);
 
-        return aiChatService.duihua("user-1", request(command));
+        return chatService.duihua("user-1", request(command));
     }
 
     // 构造指定命令的测试请求。
