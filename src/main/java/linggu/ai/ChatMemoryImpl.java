@@ -14,13 +14,13 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ChatMemoryImpl implements ChatMemory {
-    private static final int MAX = 20;
+    private static final int RECENT_MAX = 12;
+    private static final int SUMMARY_MAX = 4000;
     private final XiaoxiMapper xiaoxiMapper;
 
     private Message zhuanhuan(Xiaoxi xiaoxi) {
@@ -55,11 +55,24 @@ public class ChatMemoryImpl implements ChatMemory {
     public List<Message> get(String conversationId) {
         List<Xiaoxi> list = xiaoxiMapper.selectList(new LambdaQueryWrapper<Xiaoxi>()
                 .eq(Xiaoxi::getHuihuaId, conversationId)
-                .orderByDesc(Xiaoxi::getId)
-                .last("LIMIT " + MAX)
+                .orderByAsc(Xiaoxi::getId)
         );
-        Collections.reverse(list);
-        return list.stream().map(this::zhuanhuan).toList();
+        if (list.size() <= RECENT_MAX) {
+            return list.stream().map(this::zhuanhuan).toList();
+        }
+        int summaryEnd = list.size() - RECENT_MAX;
+        StringBuilder summary = new StringBuilder("历史摘要：");
+        for (Xiaoxi message : list.subList(0, summaryEnd)) {
+            String text = message.getNeirong() == null ? "" : message.getNeirong().replaceAll("\\s+", " ").trim();
+            if (text.length() > 220) text = text.substring(0, 220) + "…";
+            String line = "\n" + message.getType() + "：" + text;
+            if (summary.length() + line.length() > SUMMARY_MAX) break;
+            summary.append(line);
+        }
+        List<Message> result = new java.util.ArrayList<>();
+        result.add(new SystemMessage(summary.toString()));
+        result.addAll(list.subList(summaryEnd, list.size()).stream().map(this::zhuanhuan).toList());
+        return result;
     }
 
     @Override

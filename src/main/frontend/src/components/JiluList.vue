@@ -5,6 +5,16 @@
       <el-button type="primary" size="small" @click="ui.newJilu = true">+ 新建</el-button>
     </div>
 
+    <div class="list-filters">
+      <el-input v-model="jilu.filters.guanjianci" clearable size="small" placeholder="搜索题目或标签" @keyup.enter="reload" />
+      <el-select v-model="jilu.filters.ticai" clearable size="small" placeholder="题材" @change="reload">
+        <el-option v-for="(label, value) in TICAI" :key="value" :label="label" :value="value" />
+      </el-select>
+      <el-select v-model="jilu.filters.zhuangtai" clearable size="small" placeholder="状态" @change="reload">
+        <el-option v-for="(label, value) in STATUS" :key="value" :label="label" :value="value" />
+      </el-select>
+    </div>
+
     <div v-if="jilu.selectedIds.length" class="batch-bar">
       <el-checkbox
         :model-value="allChecked"
@@ -41,12 +51,22 @@
     </ul>
 
     <el-empty v-if="!jilu.list.length" description="还没有记录，点击「+ 新建」开始" :image-size="80" />
+    <el-pagination
+      v-if="jilu.total > jilu.size"
+      :current-page="jilu.page"
+      :page-size="jilu.size"
+      :total="jilu.total"
+      small
+      layout="prev, pager, next"
+      @current-change="jilu.changePage"
+    />
   </aside>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { useJiluStore } from '../stores/jilu'
 import { useChatStore } from '../stores/chat'
 import { useUiStore } from '../stores/ui'
@@ -59,7 +79,7 @@ const TICAI = { QITA: '其他', RIJI: '日记', WENXUE: '文学', XUESHU: '学�
 const STATUS = { DRAFT: '草稿', FINISH: '已完成' }
 
 const allChecked = computed(
-  () => jilu.list.length > 0 && jilu.selectedIds.length === jilu.list.length,
+  () => jilu.list.length > 0 && jilu.list.every((record) => jilu.selectedIds.includes(record.id)),
 )
 
 function fmt(v) {
@@ -79,7 +99,22 @@ function toggleAll(checked) {
   jilu.selectedIds = checked ? jilu.list.map((j) => j.id) : []
 }
 
+function reload() {
+  jilu.loadList(true).catch(() => {})
+}
+
 async function onSelect(id) {
+  if (jilu.current && JSON.stringify(jilu.editForm) !== JSON.stringify(jilu.savedForm)) {
+    try {
+      await ElMessageBox.confirm('当前记录有未保存修改，仍要切换吗？', '未保存修改', {
+        type: 'warning',
+        confirmButtonText: '放弃并切换',
+        cancelButtonText: '取消',
+      })
+    } catch {
+      return
+    }
+  }
   try {
     await jilu.select(id)
     await chat.loadHuihua(id)
@@ -110,6 +145,13 @@ async function handleBatchDelete() {
 </script>
 
 <style scoped>
+.list-filters {
+  display: grid;
+  grid-template-columns: 1fr 88px 88px;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
 .batch-bar {
   display: flex;
   align-items: center;

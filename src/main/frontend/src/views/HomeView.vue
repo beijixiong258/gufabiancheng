@@ -43,12 +43,14 @@ import { useAuthStore } from '../stores/auth'
 import { useUiStore } from '../stores/ui'
 import { useJiluStore } from '../stores/jilu'
 import { useChatStore } from '../stores/chat'
-import JiluList from '../components/JiluList.vue'
-import JiluEditor from '../components/JiluEditor.vue'
-import ChatPanel from '../components/ChatPanel.vue'
-import NewJiluDialog from '../components/NewJiluDialog.vue'
-import ProfileDialog from '../components/ProfileDialog.vue'
-import AdminDialog from '../components/AdminDialog.vue'
+import { defineAsyncComponent } from 'vue'
+
+const JiluList = defineAsyncComponent(() => import('../components/JiluList.vue'))
+const JiluEditor = defineAsyncComponent(() => import('../components/JiluEditor.vue'))
+const ChatPanel = defineAsyncComponent(() => import('../components/ChatPanel.vue'))
+const NewJiluDialog = defineAsyncComponent(() => import('../components/NewJiluDialog.vue'))
+const ProfileDialog = defineAsyncComponent(() => import('../components/ProfileDialog.vue'))
+const AdminDialog = defineAsyncComponent(() => import('../components/AdminDialog.vue'))
 
 const router = useRouter()
 const auth = useAuthStore()

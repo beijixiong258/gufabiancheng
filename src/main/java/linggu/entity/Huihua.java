@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +20,14 @@ public class Huihua {
     private String id;//会话ID
     @TableField("jilu_id")
     private String jiluId;//所属记录的ID
+    @TableField("mingcheng")
+    private String mingcheng;//会话名称
+    @TableField("chuangjian_shijian")
+    private LocalDateTime chuangjianShijian;//创建时间
+
+    public Huihua(String id, String jiluId) {
+        this.id = id;
+        this.jiluId = jiluId;
+        this.mingcheng = "新会话";
+    }
 }

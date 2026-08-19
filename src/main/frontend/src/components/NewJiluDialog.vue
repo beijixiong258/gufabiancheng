@@ -26,7 +26,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { useJiluStore } from '../stores/jilu'
 import { useChatStore } from '../stores/chat'
 

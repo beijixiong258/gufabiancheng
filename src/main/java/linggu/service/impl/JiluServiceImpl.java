@@ -4,13 +4,17 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import linggu.common.CommonException;
+import linggu.common.PageResult;
 import linggu.common.Utils;
 import linggu.dto.JiluXinjianDTO;
 import linggu.dto.JiluXiugaiDTO;
 import linggu.entity.Jilu;
 import linggu.enums.JiluZhuangtai;
+import linggu.enums.Ticai;
 import linggu.mapper.JiluMapper;
 import linggu.service.JiluService;
 import linggu.vo.JiluLiebiaoVO;
@@ -91,12 +95,21 @@ public class JiluServiceImpl extends ServiceImpl<JiluMapper, Jilu> implements Ji
     }
 
     @Override
-    public List<JiluLiebiaoVO> chakanLiebiao(String yonghuId) {
-        List<Jilu> jiluList=lambdaQuery()
-                .eq(Jilu::getYonghuId,yonghuId)
+    public PageResult<JiluLiebiaoVO> chakanLiebiao(String yonghuId, String guanjianci, Ticai ticai, JiluZhuangtai zhuangtai, long page, long size) {
+        long safePage = Math.max(page, 1);
+        long safeSize = Math.min(Math.max(size, 1), 100);
+        Page<Jilu> source = new Page<>(safePage, safeSize);
+        LambdaQueryWrapper<Jilu> wrapper = Wrappers.<Jilu>lambdaQuery()
+                        .eq(Jilu::getYonghuId, yonghuId)
+                .and(StrUtil.isNotBlank(guanjianci), w -> w.like(Jilu::getTimu, guanjianci).or().like(Jilu::getBiaoqian, guanjianci))
+                .eq(ticai != null, Jilu::getTicai, ticai)
+                .eq(zhuangtai != null, Jilu::getJiluZhuangtai, zhuangtai)
                 .orderByDesc(Jilu::getXiugaiShijian)
-                .list();
-        return BeanUtil.copyToList(jiluList, JiluLiebiaoVO.class);
+                .orderByDesc(Jilu::getId);
+        Page<Jilu> result = page(source, wrapper);
+        Page<JiluLiebiaoVO> output = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+        output.setRecords(BeanUtil.copyToList(result.getRecords(), JiluLiebiaoVO.class));
+        return PageResult.from(output);
     }
 
     @Override

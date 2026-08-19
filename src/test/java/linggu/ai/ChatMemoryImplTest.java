@@ -37,9 +37,9 @@ class ChatMemoryImplTest {
     @Test
     void getsMessagesInAscendingOrderWithCorrectRoles() {
         when(xiaoxiMapper.selectList(any())).thenReturn(new ArrayList<>(List.of(
-                xiaoxi(3L, XiaoxiLeixing.SYSTEM, "系统消息"),
+                xiaoxi(1L, XiaoxiLeixing.USER, "用户消息"),
                 xiaoxi(2L, XiaoxiLeixing.ASSISTANT, "AI消息"),
-                xiaoxi(1L, XiaoxiLeixing.USER, "用户消息")
+                xiaoxi(3L, XiaoxiLeixing.SYSTEM, "系统消息")
         )));
 
         List<Message> messages = chatMemory.get("huihua-1");
@@ -48,6 +48,22 @@ class ChatMemoryImplTest {
                 .containsExactly(MessageType.USER, MessageType.ASSISTANT, MessageType.SYSTEM);
         assertThat(messages).extracting(Message::getText)
                 .containsExactly("用户消息", "AI消息", "系统消息");
+    }
+
+    @Test
+    void summarizesOldMessagesAndKeepsRecentMessages() {
+        List<Xiaoxi> messages = new ArrayList<>();
+        for (long id = 1; id <= 15; id++) {
+            messages.add(xiaoxi(id, id % 2 == 0 ? XiaoxiLeixing.ASSISTANT : XiaoxiLeixing.USER, "消息" + id));
+        }
+        when(xiaoxiMapper.selectList(any())).thenReturn(messages);
+
+        List<Message> result = chatMemory.get("huihua-1");
+
+        assertThat(result).hasSize(13);
+        assertThat(result.get(0)).isInstanceOf(SystemMessage.class);
+        assertThat(result.get(0).getText()).contains("历史摘要", "消息1");
+        assertThat(result.get(result.size() - 1).getText()).isEqualTo("消息15");
     }
 
     // 验证写入ChatMemory时会把三种Spring AI消息转换为消息实体。

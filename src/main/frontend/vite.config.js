@@ -15,5 +15,15 @@ export default defineConfig({
   build: {
     outDir: '../../../target/classes/static',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vue: ['vue', 'vue-router', 'pinia'],
+          element: ['element-plus'],
+          http: ['axios'],
+        },
+      },
+    },
   },
 })

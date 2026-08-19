@@ -12,7 +12,7 @@
           <el-option
             v-for="(h, i) in chat.huihuaList"
             :key="h.id"
-            :label="`会话 ${i + 1}`"
+            :label="h.mingcheng || `会话 ${i + 1}`"
             :value="h.id"
           />
         </el-select>
@@ -68,7 +68,8 @@
 
 <script setup>
 import { nextTick, ref, watch } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import api from '../api'
 import { useChatStore } from '../stores/chat'
 import { useJiluStore } from '../stores/jilu'

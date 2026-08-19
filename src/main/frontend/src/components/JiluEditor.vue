@@ -46,6 +46,7 @@
     <div class="editor-foot">
       <span class="zhengwen-count">{{ jilu.editForm.zhengwen.length }} / 2000</span>
       <div class="editor-actions">
+        <span v-if="dirty" class="dirty-tip">有未保存修改</span>
         <el-button type="primary" size="small" :loading="saving" @click="handleSave">保存</el-button>
         <el-button type="success" size="small" :loading="finishing" @click="handleFinish">标记完成</el-button>
         <el-button type="danger" size="small" @click="handleDelete">删除</el-button>
@@ -55,8 +56,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { useJiluStore } from '../stores/jilu'
 import { useChatStore } from '../stores/chat'
 
@@ -64,6 +66,16 @@ const jilu = useJiluStore()
 const chat = useChatStore()
 const saving = ref(false)
 const finishing = ref(false)
+const dirty = computed(() => JSON.stringify(jilu.editForm) !== JSON.stringify(jilu.savedForm))
+
+function beforeUnload(event) {
+  if (!dirty.value) return
+  event.preventDefault()
+  event.returnValue = ''
+}
+
+onMounted(() => window.addEventListener('beforeunload', beforeUnload))
+onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
 
 async function handleSave() {
   if (!jilu.editForm.timu.trim()) {
@@ -116,3 +128,10 @@ async function handleDelete() {
   }
 }
 </script>
+
+<style scoped>
+.dirty-tip {
+  color: #b54708;
+  font-size: 12px;
+}
+</style>

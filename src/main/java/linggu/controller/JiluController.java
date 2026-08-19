@@ -1,10 +1,13 @@
 package linggu.controller;
 
 import jakarta.validation.Valid;
+import linggu.common.PageResult;
 import linggu.common.Result;
 import linggu.dto.JiluXinjianDTO;
 import linggu.dto.JiluXiugaiDTO;
 import linggu.entity.Jilu;
+import linggu.enums.JiluZhuangtai;
+import linggu.enums.Ticai;
 import linggu.service.JiluService;
 import linggu.vo.JiluLiebiaoVO;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +45,14 @@ public class JiluController {
         return Result.success(jiluService.chakan(yonghuId, jiluId));
     }
     @GetMapping("/getlist")
-    public Result<List<JiluLiebiaoVO>> chakanJiluLiebiao(@RequestAttribute String yonghuId){
-        return Result.success(jiluService.chakanLiebiao(yonghuId));
+    public Result<PageResult<JiluLiebiaoVO>> chakanJiluLiebiao(
+            @RequestAttribute String yonghuId,
+            @RequestParam(required = false) String guanjianci,
+            @RequestParam(required = false) Ticai ticai,
+            @RequestParam(required = false) JiluZhuangtai zhuangtai,
+            @RequestParam(defaultValue = "1") long page,
+            @RequestParam(defaultValue = "20") long size) {
+        return Result.success(jiluService.chakanLiebiao(yonghuId, guanjianci, ticai, zhuangtai, page, size));
     }
     @DeleteMapping("/delete")
     public Result<Void> shanchuJilu(@RequestAttribute String yonghuId,@RequestParam("id") String jiluId){

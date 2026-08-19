@@ -20,7 +20,10 @@ public class HuihuaServiceImpl extends ServiceImpl<HuihuaMapper, Huihua> impleme
     public String xinjian(String yonghuId, String jiluId) {
         jiluService.chakan(yonghuId, jiluId);
         String huihuaId=Utils.generateId();
-        Huihua huihua=new Huihua(huihuaId,jiluId);
+        Huihua huihua=new Huihua()
+                .setId(huihuaId)
+                .setJiluId(jiluId)
+                .setMingcheng("新会话");
         if (!save(huihua)){
             throw new CommonException(500,"内部错误，新建失败。");
         }
@@ -38,7 +41,11 @@ public class HuihuaServiceImpl extends ServiceImpl<HuihuaMapper, Huihua> impleme
     @Override
     public List<Huihua> chakanLiebiao(String yonghuId, String jiluId) {
         jiluService.chakan(yonghuId, jiluId);
-        return lambdaQuery().eq(Huihua::getJiluId,jiluId).list();
+        return lambdaQuery()
+                .eq(Huihua::getJiluId,jiluId)
+                .orderByDesc(Huihua::getChuangjianShijian)
+                .orderByDesc(Huihua::getId)
+                .list();
     }
     @Override
     public boolean shanchu(String yonghuId, String huihuaId) {

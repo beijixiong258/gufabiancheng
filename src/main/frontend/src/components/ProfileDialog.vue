@@ -29,7 +29,7 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import api from '../api'
 import { useAuthStore } from '../stores/auth'
 

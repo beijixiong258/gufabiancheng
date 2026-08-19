@@ -48,8 +48,10 @@ CREATE TABLE IF NOT EXISTS jilu
 
 CREATE TABLE IF NOT EXISTS huihua
 (
-    id       VARCHAR(64) NOT NULL COMMENT '会话ID',
-    jilu_id  VARCHAR(64) NOT NULL COMMENT '所属记录ID',
+    id                  VARCHAR(64)  NOT NULL COMMENT '会话ID',
+    jilu_id             VARCHAR(64)  NOT NULL COMMENT '所属记录ID',
+    mingcheng           VARCHAR(100) NOT NULL COMMENT '会话名称',
+    chuangjian_shijian  DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
 
     PRIMARY KEY (id),
     KEY idx_huihua_jilu_id (jilu_id),
@@ -61,6 +63,11 @@ CREATE TABLE IF NOT EXISTS huihua
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci
     COMMENT = '会话表';
+
+-- 已有数据库升级时执行一次：为旧会话补充名称和创建时间。
+-- 新建数据库无需执行以下两句。
+-- ALTER TABLE huihua ADD COLUMN mingcheng VARCHAR(100) NOT NULL DEFAULT '新会话' COMMENT '会话名称';
+-- ALTER TABLE huihua ADD COLUMN chuangjian_shijian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间';
 
 CREATE TABLE IF NOT EXISTS xiaoxi
 (
