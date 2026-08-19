@@ -13,9 +13,24 @@ docker compose up -d
 
 3. 使用 IntelliJ IDEA 打开项目，选择 JDK 17，等待Maven依赖加载完成。
 4. 确认 `application.yaml` 中的MySQL、Redis和AI配置可用。
-5. 在IDEA中运行 `linggu.JiluzhushouApplication`。
+5. 首次运行前，在项目根目录执行 `mvnw.cmd generate-resources` 构建前端资源。
+6. 在IDEA中运行 `linggu.JiluzhushouApplication`。
 
 应用地址：`http://localhost:8080`
+
+## 单 Jar 构建
+
+前端源码位于 `src/main/frontend`。执行：
+
+```powershell
+mvnw.cmd clean package
+```
+
+Maven 会自动执行前端的 `npm ci` 和 `npm run build`，并将构建产物装入 Spring Boot Jar。打包完成后只需运行：
+
+```powershell
+java -jar target/jiluzhushou-0.0.1-SNAPSHOT.jar
+```
 
 停止MySQL和Redis容器：
 

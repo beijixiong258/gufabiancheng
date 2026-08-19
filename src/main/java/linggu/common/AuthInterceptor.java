@@ -52,7 +52,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         else {
             path=pathAttribute.toString();
         }
-        boolean isAdmin=path.equals("/admin") || path.startsWith("/admin/");
+        boolean isAdmin=path.equals("/api/admin") || path.startsWith("/api/admin/");
         if (isAdmin && yonghu.getQuanxian()!= Quanxian.ADMIN){
             throw new CommonException(403,"没有管理员权限。");
         }

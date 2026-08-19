@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/duihua")
+@RequestMapping("/api/duihua")
 public class DuihuaController {
     private final XiaoxiService xiaoxiService;
     private final ChatService chatService;

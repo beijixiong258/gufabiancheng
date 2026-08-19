@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/huihua")
+@RequestMapping("/api/huihua")
 public class HuihuaController {
     private final HuihuaService huihuaService;
     @PostMapping("/new")

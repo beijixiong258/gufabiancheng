@@ -1,0 +1,166 @@
+/* ========== 北极熊记录助手 · 冰蓝主题（Element Plus 定制） ========== */
+:root {
+  /* 覆盖 Element Plus 主色为冰蓝 */
+  --el-color-primary: #2b6cb0;
+  --el-color-primary-light-3: #5a8fc4;
+  --el-color-primary-light-5: #84a9d2;
+  --el-color-primary-light-7: #aec4e0;
+  --el-color-primary-light-8: #c3d2e8;
+  --el-color-primary-light-9: #dbe6f1;
+  --el-color-primary-dark-2: #245a94;
+
+  --bg: #e8eff5;
+  --ink: #1c2b3a;
+  --ink-soft: #5b6b7c;
+  --line: #d9e2ec;
+  --card: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+/* ---------- 登录页 ---------- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #dfeaf4 0%, #e8eff5 45%, #d7e5f1 100%);
+  padding: 16px;
+}
+.login-card { width: 420px; max-width: 100%; }
+.login-title { font-size: 24px; letter-spacing: 2px; text-align: center; margin: 0; }
+.login-subtitle { color: var(--ink-soft); font-size: 13px; text-align: center; margin: 6px 0 18px; }
+.full { width: 100%; }
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  height: 58px;
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0 28%, var(--el-color-primary) 30% 100%);
+  box-shadow: 0 0 0 3px var(--el-color-primary-light-9);
+}
+.brand-name { font-size: 17px; font-weight: 700; letter-spacing: 1px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.current-user { font-size: 13px; color: var(--ink-soft); margin-right: 4px; }
+
+/* ---------- 布局 ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  padding: 16px;
+  max-width: 1560px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ---------- 记录列表 ---------- */
+.sidebar-card { padding: 14px; }
+.sidebar-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+}
+.sidebar-head h2 { font-size: 16px; margin: 0; }
+.jilu-list {
+  list-style: none; margin: 0; padding: 0;
+  max-height: calc(100vh - 240px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.jilu-item {
+  display: flex; gap: 8px; padding: 10px;
+  border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.jilu-item:hover { border-color: var(--el-color-primary); }
+.jilu-item.active { border-color: var(--el-color-primary); background: var(--el-color-primary-light-9); }
+.jilu-main { flex: 1; min-width: 0; }
+.jilu-title {
+  font-size: 14px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.jilu-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; }
+.jilu-time { font-size: 12px; color: var(--ink-soft); }
+
+/* ---------- 工作区 ---------- */
+.workspace-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+}
+.panel-card { padding: 16px; }
+.panel-title { font-size: 15px; margin: 0 0 12px; }
+
+/* 编辑器 */
+.editor-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.editor-title-input { flex: 1; }
+.editor-foot {
+  display: flex; align-items: center; justify-content: space-between; margin-top: 12px;
+}
+.zhengwen-count { font-size: 12px; color: var(--ink-soft); }
+.editor-actions { display: flex; gap: 8px; }
+
+/* 对话 */
+.chat-panel-card { display: flex; flex-direction: column; height: calc(100vh - 148px); min-height: 480px; }
+.chat-head {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line);
+}
+.chat-head h3 { font-size: 15px; margin: 0; }
+.chat-session { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.chat-session .el-select { width: 120px; }
+.message-list {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px; background: #f7fafc;
+}
+.msg { display: flex; }
+.msg.user { justify-content: flex-end; }
+.msg.system { justify-content: center; }
+.bubble {
+  max-width: 82%; padding: 10px 14px; border-radius: 12px;
+  font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word;
+}
+.msg.user .bubble { background: var(--el-color-primary); color: #fff; border-bottom-right-radius: 4px; }
+.msg.ai .bubble { background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.system .bubble { background: none; border: none; color: var(--ink-soft); font-size: 12px; padding: 2px 8px; }
+.bubble-text { white-space: pre-wrap; }
+.candidate-tag {
+  display: inline-block; font-size: 12px; color: #2f9e6e; background: #e4f5ec;
+  border-radius: 999px; padding: 0 10px; margin-bottom: 6px;
+}
+.use-candidate { margin-top: 8px; }
+.chat-input { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.chat-buttons { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* ---------- 管理员 ---------- */
+.admin-toolbar { margin-bottom: 12px; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1100px) {
+  .workspace-grid { grid-template-columns: 1fr; }
+  .chat-panel-card { height: 560px; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .jilu-list { max-height: 280px; }
+  .editor-foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}

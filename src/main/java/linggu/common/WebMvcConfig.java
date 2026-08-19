@@ -13,11 +13,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**")
+                .addPathPatterns("/api/**")
                 .excludePathPatterns(
-                        "/yonghu/register",
-                        "/yonghu/login",
-                        "/error"
+                        "/api/yonghu/register",
+                        "/api/yonghu/login"
                 );
     }
 }

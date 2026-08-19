@@ -95,7 +95,8 @@ public class YonghuServiceImpl extends ServiceImpl<YonghuMapper, Yonghu> impleme
                 .setId(yonghu.getId())
                 .setZhanghao(yonghu.getZhanghao())
                 .setDianhua(yonghu.getDianhua())
-                .setYouxiang(yonghu.getYouxiang());
+                .setYouxiang(yonghu.getYouxiang())
+                .setQuanxian(yonghu.getQuanxian());
     }
 
     @Override

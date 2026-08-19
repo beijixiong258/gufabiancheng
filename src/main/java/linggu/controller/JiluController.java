@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/jilu")
+@RequestMapping("/api/jilu")
 public class JiluController {
     private final JiluService jiluService;
     @PostMapping("/add")

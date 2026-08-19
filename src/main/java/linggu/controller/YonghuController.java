@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/yonghu")
+@RequestMapping("/api/yonghu")
 public class YonghuController {
     private final YonghuService yonghuService;
     @PostMapping("/register")
