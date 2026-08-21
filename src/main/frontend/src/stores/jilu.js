@@ -6,6 +6,7 @@ const emptyForm = () => ({ timu: '', ticai: 'QITA', biaoqian: '', zhengwen: '' }
 export const useJiluStore = defineStore('jilu', {
   state: () => ({
     list: [],
+    loading: false,
     total: 0,
     page: 1,
     size: 20,
@@ -15,28 +16,39 @@ export const useJiluStore = defineStore('jilu', {
     savedForm: emptyForm(),
     selectedIds: [],
   }),
+  getters: {
+    hasUnsavedChanges: (state) => (
+      Boolean(state.current)
+      && JSON.stringify(state.editForm) !== JSON.stringify(state.savedForm)
+    ),
+  },
   actions: {
     async loadList(resetPage = false) {
-      if (resetPage) this.page = 1
-      const data = await api.get('/jilu/getlist', {
-        params: {
-          guanjianci: this.filters.guanjianci || undefined,
-          ticai: this.filters.ticai || undefined,
-          zhuangtai: this.filters.zhuangtai || undefined,
-          page: this.page,
-          size: this.size,
-        },
-      })
-      this.list = data.records ?? []
-      this.total = data.total ?? 0
-      const lastPage = Math.max(data.pages ?? Math.ceil(this.total / this.size), 1)
-      if (this.page > lastPage) {
-        this.page = lastPage
-        await this.loadList()
-        return
+      this.loading = true
+      try {
+        if (resetPage) this.page = 1
+        const data = await api.get('/jilu/getlist', {
+          params: {
+            guanjianci: this.filters.guanjianci || undefined,
+            ticai: this.filters.ticai || undefined,
+            zhuangtai: this.filters.zhuangtai || undefined,
+            page: this.page,
+            size: this.size,
+          },
+        })
+        this.list = data.records ?? []
+        this.total = data.total ?? 0
+        const lastPage = Math.max(data.pages ?? Math.ceil(this.total / this.size), 1)
+        if (this.page > lastPage) {
+          this.page = lastPage
+          await this.loadList()
+          return
+        }
+        const visibleIds = new Set(this.list.map((record) => record.id))
+        this.selectedIds = this.selectedIds.filter((id) => visibleIds.has(id))
+      } finally {
+        this.loading = false
       }
-      const visibleIds = new Set(this.list.map((record) => record.id))
-      this.selectedIds = this.selectedIds.filter((id) => visibleIds.has(id))
     },
     async changePage(page) {
       this.page = page
@@ -102,6 +114,15 @@ export const useJiluStore = defineStore('jilu', {
       this.current = null
       this.editForm = emptyForm()
       this.savedForm = emptyForm()
+    },
+    reset({ loading = false } = {}) {
+      this.list = []
+      this.loading = loading
+      this.total = 0
+      this.page = 1
+      this.filters = { guanjianci: '', ticai: '', zhuangtai: '' }
+      this.selectedIds = []
+      this.clearCurrent()
     },
   },
 })

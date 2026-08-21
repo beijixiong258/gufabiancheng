@@ -29,11 +29,11 @@
 
         <!-- 注册 -->
         <el-tab-pane label="注册" name="register">
-          <el-form label-position="top" @submit.prevent>
-            <el-form-item label="账号">
+          <el-form ref="regFormRef" :model="regForm" :rules="regRules" label-position="top" @submit.prevent>
+            <el-form-item label="账号" prop="zhanghao">
               <el-input v-model="regForm.zhanghao" maxlength="32" placeholder="4-32位账号（必填）" />
             </el-form-item>
-            <el-form-item label="密码">
+            <el-form-item label="密码" prop="mima">
               <el-input
                 v-model="regForm.mima"
                 type="password"
@@ -42,15 +42,17 @@
                 placeholder="6-32位密码（必填）"
               />
             </el-form-item>
-            <el-form-item label="手机号">
-              <el-input v-model="regForm.dianhua" maxlength="11" placeholder="选填" />
+            <el-form-item label="确认密码" prop="confirmMima">
+              <el-input
+                v-model="regForm.confirmMima"
+                type="password"
+                show-password
+                maxlength="32"
+                placeholder="再次输入密码"
+                @keyup.enter="handleRegister"
+              />
             </el-form-item>
-            <el-form-item label="身份证号">
-              <el-input v-model="regForm.shenfenzheng" maxlength="18" placeholder="选填" />
-            </el-form-item>
-            <el-form-item label="邮箱">
-              <el-input v-model="regForm.youxiang" maxlength="255" placeholder="选填" />
-            </el-form-item>
+            <p class="register-note">手机号和邮箱可在登录后进入个人资料补充。</p>
             <el-button type="primary" class="full" :loading="loading" @click="handleRegister">
               注册
             </el-button>
@@ -74,7 +76,28 @@ const tab = ref('login')
 const loading = ref(false)
 
 const loginForm = reactive({ zhanghao: '', mima: '' })
-const regForm = reactive({ zhanghao: '', mima: '', dianhua: '', shenfenzheng: '', youxiang: '' })
+const regFormRef = ref(null)
+const regForm = reactive({ zhanghao: '', mima: '', confirmMima: '' })
+const regRules = {
+  zhanghao: [
+    { required: true, message: '请输入账号', trigger: 'blur' },
+    { min: 4, max: 32, message: '账号应为4-32位', trigger: 'blur' },
+  ],
+  mima: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 32, message: '密码应为6-32位', trigger: 'blur' },
+  ],
+  confirmMima: [
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
+    {
+      validator: (_rule, value, callback) => {
+        if (value !== regForm.mima) callback(new Error('两次输入的密码不一致'))
+        else callback()
+      },
+      trigger: ['blur', 'change'],
+    },
+  ],
+}
 
 async function handleLogin() {
   if (!loginForm.zhanghao || !loginForm.mima) {
@@ -95,23 +118,23 @@ async function handleLogin() {
 }
 
 async function handleRegister() {
-  if (!regForm.zhanghao || !regForm.mima) {
-    ElMessage.warning('请输入账号和密码')
+  if (loading.value) return
+  try {
+    await regFormRef.value?.validate()
+  } catch {
     return
   }
   loading.value = true
   try {
-    // 可选字段为空时不提交，避免后端 @Pattern 误伤
     await auth.register({
-      zhanghao: regForm.zhanghao,
+      zhanghao: regForm.zhanghao.trim(),
       mima: regForm.mima,
-      dianhua: regForm.dianhua || undefined,
-      shenfenzheng: regForm.shenfenzheng || undefined,
-      youxiang: regForm.youxiang || undefined,
     })
     ElMessage.success('注册成功，请登录')
-    loginForm.zhanghao = regForm.zhanghao
+    loginForm.zhanghao = regForm.zhanghao.trim()
     loginForm.mima = ''
+    Object.assign(regForm, { zhanghao: '', mima: '', confirmMima: '' })
+    regFormRef.value?.clearValidate()
     tab.value = 'login'
   } catch {
     /* 拦截器已提示 */

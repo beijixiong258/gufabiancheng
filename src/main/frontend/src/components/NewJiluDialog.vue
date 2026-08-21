@@ -1,16 +1,23 @@
 <template>
-  <el-dialog v-model="visible" title="新建记录" width="440px">
-    <el-form label-position="top">
+  <el-dialog v-model="visible" title="新建记录" width="440px" @opened="focusTitle">
+    <el-form label-position="top" @submit.prevent="handleCreate">
       <el-form-item label="题目">
-        <el-input v-model="form.timu" maxlength="50" placeholder="不超过50字（必填）" />
+        <el-input
+          ref="titleInput"
+          v-model="form.timu"
+          maxlength="50"
+          placeholder="不超过50字（必填）"
+          @keyup.enter="handleCreate"
+        />
       </el-form-item>
       <el-form-item label="题材">
         <el-select v-model="form.ticai">
-          <el-option label="其他" value="QITA" />
-          <el-option label="日记" value="RIJI" />
-          <el-option label="文学" value="WENXUE" />
-          <el-option label="学术" value="XUESHU" />
-          <el-option label="会议" value="HUIYI" />
+          <el-option
+            v-for="option in TICAI_OPTIONS"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="标签">
@@ -18,8 +25,8 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" :loading="loading" @click="handleCreate">创建</el-button>
+      <el-button :disabled="loading" @click="visible = false">取消</el-button>
+      <el-button native-type="submit" type="primary" :loading="loading" @click="handleCreate">创建</el-button>
     </template>
   </el-dialog>
 </template>
@@ -29,14 +36,22 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { useJiluStore } from '../stores/jilu'
 import { useChatStore } from '../stores/chat'
+import { TICAI_OPTIONS } from '../constants/jilu'
 
 const visible = defineModel()
+const emit = defineEmits(['created'])
 const jilu = useJiluStore()
 const chat = useChatStore()
 const loading = ref(false)
+const titleInput = ref(null)
 const form = reactive({ timu: '', ticai: 'QITA', biaoqian: '' })
 
+function focusTitle() {
+  titleInput.value?.focus()
+}
+
 async function handleCreate() {
+  if (loading.value) return
   if (!form.timu.trim()) {
     ElMessage.warning('请输入题目')
     return
@@ -54,6 +69,7 @@ async function handleCreate() {
     form.biaoqian = ''
     await jilu.select(created.id)
     await chat.loadHuihua(created.id)
+    emit('created')
     ElMessage.success('已创建记录')
   } catch {
     /* 拦截器已提示 */

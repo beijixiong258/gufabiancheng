@@ -14,13 +14,23 @@
     <el-button type="primary" class="full" :loading="saving" @click="saveProfile">保存资料</el-button>
 
     <el-divider />
-    <h4 style="margin: 0 0 10px">修改密码</h4>
+    <h4 class="password-title">修改密码</h4>
     <el-form label-position="top">
       <el-form-item label="原密码">
         <el-input v-model="pwd.mima1" type="password" show-password />
       </el-form-item>
       <el-form-item label="新密码">
         <el-input v-model="pwd.mima2" type="password" show-password maxlength="32" placeholder="6-32位" />
+      </el-form-item>
+      <el-form-item label="确认新密码">
+        <el-input
+          v-model="pwd.mima3"
+          type="password"
+          show-password
+          maxlength="32"
+          placeholder="再次输入新密码"
+          @keyup.enter="changePassword"
+        />
       </el-form-item>
     </el-form>
     <el-button class="full" :loading="changing" @click="changePassword">修改密码</el-button>
@@ -38,7 +48,7 @@ const auth = useAuthStore()
 const saving = ref(false)
 const changing = ref(false)
 const form = reactive({ zhanghao: '', dianhua: '', youxiang: '' })
-const pwd = reactive({ mima1: '', mima2: '' })
+const pwd = reactive({ mima1: '', mima2: '', mima3: '' })
 
 watch(visible, async (v) => {
   if (v) {
@@ -52,6 +62,7 @@ watch(visible, async (v) => {
     form.youxiang = auth.user?.youxiang ?? ''
     pwd.mima1 = ''
     pwd.mima2 = ''
+    pwd.mima3 = ''
   }
 })
 
@@ -86,11 +97,16 @@ async function changePassword() {
     ElMessage.warning('新密码应为6-32位')
     return
   }
+  if (pwd.mima2 !== pwd.mima3) {
+    ElMessage.warning('两次输入的新密码不一致')
+    return
+  }
   changing.value = true
   try {
     await api.put('/yonghu/password', null, { params: { mima1: pwd.mima1, mima2: pwd.mima2 } })
     pwd.mima1 = ''
     pwd.mima2 = ''
+    pwd.mima3 = ''
     ElMessage.success('密码已修改')
   } catch {
     /* 拦截器已提示 */
@@ -99,3 +115,11 @@ async function changePassword() {
   }
 }
 </script>
+
+<style scoped>
+.password-title {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 15px;
+}
+</style>

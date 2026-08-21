@@ -6,7 +6,7 @@ import { TOKEN_KEY } from '../constants/auth'
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 60000, // AI 对话可能较慢，放宽超时
+  timeout: 180000, // 长正文生成可能超过一分钟，避免浏览器先于后端判定失败
 })
 
 // 请求拦截器：统一携带 Token
@@ -33,7 +33,10 @@ api.interceptors.response.use(
     return result
   },
   (error) => {
-    ElMessage.error(error.response?.data?.message || '无法连接服务器，请确认后端已启动')
+    const message = error.code === 'ECONNABORTED'
+      ? '请求等待时间过长，请稍后重试'
+      : (error.response?.data?.message || '无法连接服务器，请确认后端已启动')
+    ElMessage.error(message)
     return Promise.reject(error)
   },
 )

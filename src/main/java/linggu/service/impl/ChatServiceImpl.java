@@ -16,6 +16,7 @@ import linggu.service.JiluService;
 import linggu.service.XiaoxiService;
 import linggu.vo.DuihuaVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
@@ -35,6 +36,7 @@ import static linggu.ai.AIConstant.XITONGTISHICI;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatServiceImpl implements ChatService {
     private final ChatClient.Builder chatClientBuilder;
     private final XiaoxiService xiaoxiService;
@@ -83,6 +85,7 @@ public class ChatServiceImpl implements ChatService {
                     .content();
         }
         catch (Exception e) {
+            log.error("AI 服务调用失败，异常类型：{}，原因：{}", e.getClass().getName(), e.getMessage(), e);
             throw new CommonException(500, "内部错误，AI回复获取失败。");
         }
         return aiResponseParser.jiexi(aiYuanshiHuida);
@@ -120,7 +123,6 @@ public class ChatServiceImpl implements ChatService {
         if (command == 0 && StrUtil.isBlank(duihuaDTO.getNeirong())) {
             throw new CommonException(400, "消息内容不能为空。");
         }
-
         String huihuaId = duihuaDTO.getHuihuaId();
         Huihua huihua = huihuaService.chakan(yonghuId, huihuaId);
         Object lock = concurrentHashMap.computeIfAbsent(huihuaId, id -> new Object());

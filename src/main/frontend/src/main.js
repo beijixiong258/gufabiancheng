@@ -27,8 +27,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-provideGlobalConfig({ locale: zhCn }, app, true)
-;
+provideGlobalConfig({ locale: zhCn }, app, true);
 [
   ElButton,
   ElCard,

@@ -7,4 +7,11 @@ export const useUiStore = defineStore('ui', {
     profile: false,
     admin: false,
   }),
+  actions: {
+    closeAll() {
+      this.newJilu = false
+      this.profile = false
+      this.admin = false
+    },
+  },
 })
